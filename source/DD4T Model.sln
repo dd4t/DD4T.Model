@@ -6,10 +6,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DD4T.ContentModel.Contracts
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DD4T.ContentModel", "DD4T.ContentModel\DD4T.ContentModel.csproj", "{83F5CFC2-14D5-4190-B51D-7AF7A69B67E9}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Publishing Solution Items", "Publishing Solution Items", "{DB974FDB-3490-4356-BB72-876E5185A973}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{DB974FDB-3490-4356-BB72-876E5185A973}"
 	ProjectSection(SolutionItems) = preProject
-		Publishing Solution Items\AssemblyInfo.cs = Publishing Solution Items\AssemblyInfo.cs
-		Publishing Solution Items\dynamicdelivery.snk = Publishing Solution Items\dynamicdelivery.snk
+		Solution Items\AssemblyInfo.cs = Solution Items\AssemblyInfo.cs
+		Solution Items\dynamicdelivery.snk = Solution Items\dynamicdelivery.snk
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DD4T.Serialization", "DD4T.Serialization\DD4T.Serialization.csproj", "{849A21D3-5863-4C43-98D3-6B8B83B9300F}"

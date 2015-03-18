@@ -24,10 +24,10 @@ using System.Runtime.InteropServices;
 //
 //      Major Version
 //      Minor Version 
-//      Build Number
-//      Revision
-//
-// You can specify all the values or you can default the Build and Revision Numbers 
-// by using the '*' as shown below:
-// [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.31.0.0")]
+//      Revision (anything under 100 is beta or pre-release)
+//      The last digit is left to 0
+//  
+[assembly: AssemblyVersion("2.0.0.0")]
+[assembly: AssemblyFileVersion("2.0.2.0")]
+[assembly: AssemblyInformationalVersion("DD4T 2.0 beta")]
+[assembly: AssemblyProduct("DD4T")]
