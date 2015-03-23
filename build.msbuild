@@ -14,13 +14,13 @@
 		<BuildDocDirectory>$(BuildOutputDirectory)\doc</BuildDocDirectory>
 		<BuildLogDirectory>$(BuildOutputDirectory)\log</BuildLogDirectory>
 		<BuildPackageDirectory>$(BuildOutputDirectory)\package</BuildPackageDirectory>
+		<BuildWorkDirectory>$(BuildOutputDirectory)\work</BuildWorkDirectory>
 		<BuildNuGetDirectory>$(BuildPackageDirectory)\lib</BuildNuGetDirectory>
 		<BuildNuGetFramework40Directory>$(BuildNuGetDirectory)\net40</BuildNuGetFramework40Directory>
 		<BuildNuGetFramework45Directory>$(BuildNuGetDirectory)\net45</BuildNuGetFramework45Directory>
 
 		<!-- NuGet Download location -->
-		<NuGetUrl>http://nuget.org/nuget.exe</NuGetUrl>
-		<NuGetFolder>$(BuildOutputDirectory)\NuGet</NuGetFolder>
+		<NuGetFolder>$(MSBuildProjectDirectory)\source\.nuget</NuGetFolder>
 
 		<ConfigurationDirectory>$(MSBuildProjectDirectory)\configuration</ConfigurationDirectory>
 
@@ -54,15 +54,11 @@
 	</UsingTask>
 
 	<Target Name="All">
-		<CallTarget Targets="Clean;Prepare;Compile;Test;Analyze" />
+		<CallTarget Targets="Clean;Compile;Test;Analyze" />
 		<CallTarget Targets="Doc;Package"/><!-- Condition="'$(Configuration)' == 'Release'"/>-->
 		<Message Text="Build complete."/>
 	</Target>
 	<!-- Prepare build, download NuGet -->
-	<Target Name="Prepare">
-		<MakeDir Directories="$(NuGetFolder)" />
-		<WebDownload FileUri="$(NuGetUrl)" FileName="$(NuGetFolder)\nuget.exe" />
-	</Target>
 	<Target Name="Analyze">
 		<!-- Analyze runs post-build analysis like FxCop and NDepend. -->
 	</Target>
@@ -90,10 +86,16 @@
         	<BinFiles Include="$(BuildBinDirectory)\**\*.*" />
     	</ItemGroup>
 		
+		<!-- Flatten file structure -->		
+    	<Copy SourceFiles="@(BinFiles)" DestinationFiles="@(BinFiles->'$(BuildWorkDirectory)\%(Filename)%(Extension)')"/>
+    	<ItemGroup>
+    		<PackageFiles Include="$(BuildWorkDirectory)\**\*.*"/>
+    	</ItemGroup>
+
 		<!-- Build NuGet package structure -->
 		<MakeDir Directories="@(NuGetStructureFolders)" />
-		<Copy SourceFiles="@(BinFiles)" DestinationFiles="@(BinFiles->'$(BuildNuGetFramework40Directory)\%(Filename)%(Extension)')" />
-		<Copy SourceFiles="@(BinFiles)" DestinationFiles="@(BinFiles->'$(BuildNuGetFramework45Directory)\%(Filename)%(Extension)')" />
+		<Copy SourceFiles="@(PackageFiles)" DestinationFiles="@(BinFiles->'$(BuildNuGetFramework40Directory)\%(Filename)%(Extension)')" />
+		<Copy SourceFiles="@(PackageFiles)" DestinationFiles="@(BinFiles->'$(BuildNuGetFramework45Directory)\%(Filename)%(Extension)')" />
 		<!-- Copy nuspec file -->
     	<Copy SourceFiles="$(NuSpecFile)" DestinationFolder="$(BuildPackageDirectory)" />
 
@@ -109,11 +111,15 @@
     	<!-- Update version in nuspec file -->
     	<XmlUpdate XmlFileName="$(NuSpecFile)" XPath="//version" Value="$(VersionInfo)" />
 
-    	<!-- Create package -->
+    	<!-- Create NuGet package -->
     	<Exec Command='$(NuGetFolder)\nuget.exe pack "$(NuSpecFile)"' WorkingDirectory="$(BuildPackageDirectory)"/>
+
+    	<!-- Create ZipPackage -->
+		<Zip Files="@(PackageFiles)" ZipFileName="$(BuildPackageDirectory)\$(ProjectName).$(VersionInfo).zip" WorkingDirectory="$(BuildWorkDirectory)" />
 
     	<!-- Remove temporary files -->
     	<RemoveDir Directories="$(BuildNugetDirectory)" />
+    	<RemoveDir Directories="$(BuildWorkDirectory)" />
 	</Target>
 	<Target Name="Test">
 		<!-- Test runs the unit testing/coverage for the project. -->
