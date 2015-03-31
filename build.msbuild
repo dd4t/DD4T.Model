@@ -25,7 +25,7 @@
 		<ConfigurationDirectory>$(MSBuildProjectDirectory)\configuration</ConfigurationDirectory>
 
 		<!-- NuSpec file for NuGet Package creation -->
-		<NuSpecFile>$(ConfigurationDirectory)\$(ProjectName).nuspec</NuSpecFile>
+		<NuSpecFile>$(ConfigurationDirectory)\DD4T.Model.nuspec</NuSpecFile>
 	</PropertyGroup>
 	<ItemGroup>
 		<CleanFolders Include="$(BuildOutputDirectory)"/>
@@ -105,7 +105,7 @@
     	</GetInformationalVersion>
 
     	<PropertyGroup>
-    		<NuSpecFile>$(BuildPackageDirectory)\$(ProjectName).nuspec</NuSpecFile>
+    		<NuSpecFile>$(BuildPackageDirectory)\DD4T.Model.nuspec</NuSpecFile>
     	</PropertyGroup>
 
     	<!-- Update version in nuspec file -->
@@ -115,7 +115,7 @@
     	<Exec Command='$(NuGetFolder)\nuget.exe pack "$(NuSpecFile)"' WorkingDirectory="$(BuildPackageDirectory)"/>
 
     	<!-- Create ZipPackage -->
-		<Zip Files="@(PackageFiles)" ZipFileName="$(BuildPackageDirectory)\$(ProjectName).$(VersionInfo).zip" WorkingDirectory="$(BuildWorkDirectory)" />
+		<Zip Files="@(PackageFiles)" ZipFileName="$(BuildPackageDirectory)\DD4T.Model.$(VersionInfo).zip" WorkingDirectory="$(BuildWorkDirectory)" />
 
     	<!-- Remove temporary files -->
     	<RemoveDir Directories="$(BuildNugetDirectory)" />
