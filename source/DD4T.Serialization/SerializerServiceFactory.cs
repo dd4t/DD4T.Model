@@ -11,26 +11,19 @@ namespace DD4T.Serialization
     {
         private static Dictionary<Regex, string> serializersByPattern = new Dictionary<Regex, string>()
         {
-            { new Regex ("^<"), "DD4T.Serialization.XmlSerializerService" }
+            { new Regex ("^<"), "DD4T.Serialization.XmlSerializerService" },
+            { new Regex ("^{"), "DD4T.Serialization.JSONSerializerService" }
         };
+
+        private static Dictionary<string, BaseSerializerService> serializerObjectsByPattern = new Dictionary<string, BaseSerializerService>();
+
         private static string defaultSerializerServerType = "DD4T.Serialization.JSONSerializerService";
 
         public static ISerializerService FindSerializerServiceForContent(string content)
         {
             // first trim leading and trailing whitespace 
             string contentToCheck = content.Trim();
-
-            // first, try to decompress (this will fail if the content is uncompressed, of course)
             bool isCompressed = false;
-            try
-            {
-                content = Compressor.Decompress(content);
-                isCompressed = true;
-            }
-            catch
-            {
-
-            }
             foreach (Regex re in serializersByPattern.Keys)
             {
                 if (re.IsMatch(contentToCheck))
@@ -38,18 +31,47 @@ namespace DD4T.Serialization
                     return Initialize(serializersByPattern[re], isCompressed);
                 }
             }
+            // content is probably compressed, try uncompressing it now
+            // first, try to decompress (this will fail if the content is uncompressed, of course)
+           
+            try
+            {
+                content = Compressor.Decompress(content);
+                isCompressed = true;
+            }
+            catch
+            {
+                // content is apparently not compressed, and it does not match any of the 
+                // known start strings, so we will throw this exception
+                throw;
+            }
+
+            contentToCheck = content.Trim();
+            foreach (Regex re in serializersByPattern.Keys)
+            {
+                if (re.IsMatch(contentToCheck))
+                {
+                    return Initialize(serializersByPattern[re], isCompressed);
+                }
+            }
+
             return Initialize(defaultSerializerServerType, isCompressed);
         }
 
         private static BaseSerializerService Initialize(string typeName, bool isCompressed)
         {
-            Type t = Type.GetType(typeName);
-            BaseSerializerService service = Activator.CreateInstance(t) as BaseSerializerService;
-            if (isCompressed)
+            string key = string.Format("{0}_{1}", typeName, isCompressed);
+            if (!serializerObjectsByPattern.ContainsKey(key))
             {
-                service.SerializationProperties = new SerializationProperties() { CompressionEnabled = true };
+                Type t = Type.GetType(typeName);
+                BaseSerializerService service = Activator.CreateInstance(t) as BaseSerializerService;
+                if (isCompressed)
+                {
+                    service.SerializationProperties = new SerializationProperties() { CompressionEnabled = true };
+                }
+                serializerObjectsByPattern.Add(key, service);
             }
-            return service;
+            return serializerObjectsByPattern[key];
         }
     }
 }
