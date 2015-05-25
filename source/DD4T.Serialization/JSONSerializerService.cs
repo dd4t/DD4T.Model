@@ -42,13 +42,31 @@ namespace DD4T.Serialization
 
         public override T Deserialize<T>(string input) 
         {
+            // NOTE: important exception situation!!
+            // if the requested type is IComponentPresentation, there is a possiblity that the data 
+            // provided to us actually contains a Component instead. In that case we need to add a 
+            // dummy CT / CP around the Component and return that!
+
             if (((SerializationProperties)SerializationProperties).CompressionEnabled)
             {
                 input = Compressor.Decompress(input);
             }
+
             using (var inputValueReader = new StringReader(input))
             {
                 JsonTextReader reader = new JsonTextReader(inputValueReader);
+                if (typeof(T).Name.Contains("ComponentPresentation") 
+                    && !input.Contains("ComponentTemplate"))
+                {
+                    // handle the exception situation where we are asked to deserialize into a CP but the data is actually a Component
+                    Component component = Serializer.Deserialize<Component>(reader);
+                    IComponentPresentation componentPresentation = new ComponentPresentation()
+                    {
+                        Component = component,
+                        ComponentTemplate = new ComponentTemplate()
+                    };
+                    return (T)componentPresentation;
+                }
                 return (T)Serializer.Deserialize<T>(reader);
             }
         }
