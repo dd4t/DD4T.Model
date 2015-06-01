@@ -149,11 +149,6 @@ namespace DD4T.ContentModel
         {
             get { return Conditions.ToList<ICondition>(); }
         }
-        [XmlIgnore]
-        public int PublicationNumber
-        {
-            get { return Component.PublicationNumber; }
-        }
     }
 
     public class PageTemplate : RepositoryLocalItem, IPageTemplate
@@ -446,27 +441,8 @@ namespace DD4T.ContentModel
 
     public abstract class TridionItem : IItem
     {
-        protected int publicationNum = -1;
-        protected string id = null;
-        public string Id
-        {
-            get
-            {
-                return id;
-            }
-            set
-            {
-                id = value;
-                publicationNum = new TcmUri(id).PublicationId; //returns 0 if parsing fails
-            }
-        }
+        public string Id { get; set; }
         public string Title { get; set; }
-
-        [XmlIgnore]
-        public int PublicationNumber
-        {
-            get { return publicationNum; }
-        }
     }
     public abstract class RepositoryLocalItem : TridionItem, IRepositoryLocal
     {
@@ -491,19 +467,6 @@ namespace DD4T.ContentModel
 
     public class Publication : TridionItem, IPublication
     {
-        public string Id
-        {
-            get
-            {
-                return id;
-            }
-            set
-            {
-                id = value;
-                //We override the impl of Id so that publication number is set properly to Item ID, not Publication ID
-                publicationNum = new TcmUri(id).ItemId; //returns 0 if parsing fails
-            }
-        }
     }
 
     public class TcmUri
