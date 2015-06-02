@@ -5,11 +5,8 @@
     using System;
     #endregion Usings
 
-    public interface IPageTemplate : IRepositoryLocal
+    public interface IPageTemplate : ITemplate
     {
         string FileExtension { get; }
-        DateTime RevisionDate { get; }
-        IOrganizationalItem Folder { get; }
-        IFieldSet MetadataFields { get; }
     }
 }

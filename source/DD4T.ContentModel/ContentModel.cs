@@ -1,5 +1,4 @@
-﻿using DD4T.ContentModel.Factories;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -157,7 +156,7 @@ namespace DD4T.ContentModel
         public DateTime RevisionDate { get; set; }
         public FieldSet MetadataFields { get; set; }
         [XmlIgnore]
-        IFieldSet IPageTemplate.MetadataFields
+        IFieldSet ITemplate.MetadataFields
         {
             get
             {
@@ -166,7 +165,7 @@ namespace DD4T.ContentModel
         }
         public OrganizationalItem Folder { get; set; }
         [XmlIgnore]
-        IOrganizationalItem IPageTemplate.Folder
+        IOrganizationalItem ITemplate.Folder
         {
             get { return Folder as IOrganizationalItem; }
         }
@@ -178,7 +177,7 @@ namespace DD4T.ContentModel
         public DateTime RevisionDate { get; set; }
         public FieldSet MetadataFields { get; set; }
         [XmlIgnore]
-        IFieldSet IComponentTemplate.MetadataFields
+        IFieldSet ITemplate.MetadataFields
         {
             get
             {
@@ -187,7 +186,7 @@ namespace DD4T.ContentModel
         }
         public OrganizationalItem Folder { get; set; }
         [XmlIgnore]
-        IOrganizationalItem IComponentTemplate.Folder
+        IOrganizationalItem ITemplate.Folder
         {
             get { return Folder as IOrganizationalItem; }
         }
@@ -574,38 +573,9 @@ namespace DD4T.ContentModel
 
     public class Binary : Component, IBinary
     {
-
-        public Binary(IBinaryFactory factory)
-        {
-            this.Factory = factory;
-        }
-        public Binary()
-        {
-        }
-
-        public byte[] BinaryData
-        {
-            get
-            {
-                if (this.binaryData == null && this.Factory != null)
-                {
-                    this.binaryData = this.Factory.FindBinaryContent(Url);
-                }
-                return this.binaryData;
-            }
-            set
-            {
-                this.binaryData = value;
-            }
-        }
-
+        public byte[] BinaryData { get; set; }
         public string VariantId { get; set; }
         public string Url { get; set; }
-        //public IMultimedia Multimedia { get; set; }
-
-        private byte[] binaryData = null;
-        private IBinaryFactory Factory { get; set; }
-
         public System.IO.Stream BinaryStream { get; set; }
     }
 

@@ -3,12 +3,8 @@
     using System.Collections.Generic;
     using System;
 
-    public interface IComponentTemplate : IRepositoryLocal
+    public interface IComponentTemplate : ITemplate
     {
-        IOrganizationalItem Folder { get; }
-        IFieldSet MetadataFields { get; }
         string OutputFormat { get; }
-        DateTime RevisionDate { get; }
-
     }
 }
