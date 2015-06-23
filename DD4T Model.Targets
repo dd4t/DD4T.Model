@@ -58,7 +58,6 @@
 	</Target>
 
 	<Target Name="Package">
-		<Delete Files="$(BuildBinDirectory)\DD4T.ContentModel.XmlSerializers.dll" ContinueOnError="true" />
 		
 		<!-- Package builds the zip files, NuGet packages, and MSI files for the project. -->
 		<ItemGroup>
