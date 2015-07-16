@@ -2,12 +2,16 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
 	<PropertyGroup>
 		<Configuration Condition="'$(Configuration)'==''">Debug</Configuration>
-		
-		<ProjectName>DD4T.ContentModel</ProjectName>
+		<ProductName>DD4T.Model</ProductName>
 
+		<!-- Source Directories -->
+		<BaseDirectory Condition="'$(BaseDirectory)' == ''">$(MSBuildProjectDirectory)</BaseDirectory>
+		<BaseDirectory Condition="!Exists('$(BaseDirectory)\source')">..\..</BaseDirectory>
+
+		<SourceDirectory>$(BaseDirectory)\source</SourceDirectory>
+		
 		<!-- Build Directories -->
-		<BuildOutputDirectory>..\..\build</BuildOutputDirectory>
-		<BuildOutputDirectory Condition="'$(OutputPath)' == ''">$(MSBuildProjectDirectory)\build</BuildOutputDirectory>
+		<BuildOutputDirectory>$(BaseDirectory)\build</BuildOutputDirectory>
 		<BuildBinDirectory>$(BuildOutputDirectory)\bin</BuildBinDirectory>
 		<BuildDocDirectory>$(BuildOutputDirectory)\doc</BuildDocDirectory>
 		<BuildLogDirectory>$(BuildOutputDirectory)\log</BuildLogDirectory>
@@ -17,15 +21,13 @@
 		<BuildNuGetFramework40Directory>$(BuildNuGetDirectory)\net40</BuildNuGetFramework40Directory>
 		<BuildNuGetFramework45Directory>$(BuildNuGetDirectory)\net45</BuildNuGetFramework45Directory>
 
-		<!-- NuGet Download location -->
-		<NuGetFolder>$(SolutionDir)\.nuget</NuGetFolder>
-		<NuGetFolder Condition="'$(OutputPath)' == ''">$(MSBuildProjectDirectory)\source\.nuget</NuGetFolder>
+		<NuGetFolder>$(SourceDirectory)\.nuget</NuGetFolder>
 
-		<ConfigurationDirectory>..\..\configuration</ConfigurationDirectory>
-		<ConfigurationDirectory Condition="'$(OutputPath)' == ''">$(MSBuildProjectDirectory)\configuration</ConfigurationDirectory>
+		<ConfigurationDirectory>$(BaseDirectory)\configuration</ConfigurationDirectory>
 
 		<!-- NuSpec file for NuGet Package creation -->
-		<NuSpecFile>$(ConfigurationDirectory)\DD4T.Model.nuspec</NuSpecFile>
+		<NuSpecFileName>$(ProductName).nuspec</NuSpecFileName>
+		<NuSpecFile>$(ConfigurationDirectory)\$(NuSpecFileName)</NuSpecFile>
 	</PropertyGroup>
 	<ItemGroup>
 		<CleanFolders Include="$(BuildOutputDirectory)"/>
@@ -54,52 +56,58 @@
 	</UsingTask>
 
 	<Target Name="CleanUp">
+		<!-- Clean removes all build artifacts to prepare for a new build. -->
 		<RemoveDir Directories="@(CleanFolders)" />
+		<MSBuild Projects="$(SolutionFile)" Targets="Clean" />
 	</Target>
-
 	<Target Name="Package">
-		<Delete Files="$(BuildBinDirectory)\DD4T.ContentModel.XmlSerializers.dll" ContinueOnError="true" />
-		
-		<!-- Package builds the zip files, NuGet packages, and MSI files for the project. -->
 		<ItemGroup>
-        	<BinFiles Include="$(BuildBinDirectory)\**\*.*" />
-    	</ItemGroup>
+			<PackageFilesCleanup Include="$(BuildPackageDirectory)\**\*.*"/>
+		</ItemGroup>
+		<Delete Files="@(PackageFilesCleanup)" />
+		<Message Text="##### $(SourceDirectory) - $(NuGetFolder)" />
+		
+		<MakeDir Directories="@(NuGetStructureFolders)"/>
 
-		<!-- Flatten file structure -->		
-    	<Copy SourceFiles="@(BinFiles)" DestinationFiles="@(BinFiles->'$(BuildWorkDirectory)\%(Filename)%(Extension)')"/>
-    	<ItemGroup>
-    		<PackageFiles Include="$(BuildWorkDirectory)\**\*.*"/>
-    	</ItemGroup>
-
-		<!-- Build NuGet package structure -->
-		<MakeDir Directories="@(NuGetStructureFolders)" />
-		<Copy SourceFiles="@(PackageFiles)" DestinationFiles="@(BinFiles->'$(BuildNuGetFramework40Directory)\%(Filename)%(Extension)')" />
-		<Copy SourceFiles="@(PackageFiles)" DestinationFiles="@(BinFiles->'$(BuildNuGetFramework45Directory)\%(Filename)%(Extension)')" />
-		<!-- Copy nuspec file -->
-    	<Copy SourceFiles="$(NuSpecFile)" DestinationFolder="$(BuildPackageDirectory)" />
-
+		<ItemGroup>
+        	<MainPackageFiles Include="$(BuildBinDirectory)\**\*.*"/>
+        </ItemGroup>
+    	
     	<!-- Get the productversion from the assemblies -->
-    	<GetInformationalVersion AssemblyFile="@(BinFiles)">
+    	<GetInformationalVersion AssemblyFile="@(MainPackageFiles)">
     		<Output TaskParameter="Version" PropertyName="VersionInfo"/>
     	</GetInformationalVersion>
 
+        <ItemGroup>
+        	<NuGetFiles Include="$(NuSpecFile)"/>
+        </ItemGroup>
+
+    	<Copy SourceFiles="@(NuGetFiles)" DestinationFiles="@(NuGetFiles->'$(BuildPackageDirectory)\%(Filename)%(Extension)')"/>
+    	<Copy SourceFiles="@(MainPackageFiles)" DestinationFiles="@(MainPackageFiles->'$(BuildBinDirectory)\%(Filename)%(Extension)')"/>
+
     	<PropertyGroup>
-    		<NuSpecFile>$(BuildPackageDirectory)\DD4T.Model.nuspec</NuSpecFile>
+    		<NuSpecFile>$(BuildPackageDirectory)\$(NuSpecFileName)</NuSpecFile>
     	</PropertyGroup>
+    	<ItemGroup>
+    		<FlattenedPackageFiles Include="$(BuildBinDirectory)\**\*.*"/>
+    	</ItemGroup>
 
     	<!-- Update version in nuspec file -->
     	<XmlUpdate XmlFileName="$(NuSpecFile)" XPath="//version" Value="$(VersionInfo)" />
 
+
+		<Copy SourceFiles="@(FlattenedPackageFiles)" DestinationFiles="@(FlattenedPackageFiles->'$(BuildNuGetFramework40Directory)\%(RecursiveDir)%(Filename)%(Extension)')" />
+		<Copy SourceFiles="@(FlattenedPackageFiles)" DestinationFiles="@(FlattenedPackageFiles->'$(BuildNuGetFramework45Directory)\%(RecursiveDir)%(Filename)%(Extension)')" />
+
     	<!-- Create NuGet package -->
     	<Exec Command='$(NuGetFolder)\nuget.exe pack "$(NuSpecFile)"' WorkingDirectory="$(BuildPackageDirectory)"/>
 
-    	<!-- Create ZipPackage -->
-		<Zip Files="@(PackageFiles)" ZipFileName="$(BuildPackageDirectory)\DD4T.Model.$(VersionInfo).zip" WorkingDirectory="$(BuildWorkDirectory)" />
-
-    	<!-- Remove temporary files -->
-    	<RemoveDir Directories="$(BuildNugetDirectory)" />
-    	<RemoveDir Directories="$(BuildWorkDirectory)" />
     	<Delete Files="$(NuSpecFile)" />
+
+    	<!-- Create ZipPackage -->
+		<Zip Files="@(FlattenedPackageFiles)" ZipFileName="$(BuildPackageDirectory)\$(ProductName).$(VersionInfo).zip" WorkingDirectory="$(BuildBinDirectory)" />
+
+    	<RemoveDir Directories="$(BuildWorkDirectory)" />
 	</Target>
 
 	<Target Name="Install">
