@@ -74,8 +74,23 @@ namespace DD4T.Model.Test
                 {
                     Id = "tcm:0-2-1",
                     Title = "Test - owningpublication.title"
-                }
+                },
+                Fields = new FieldSet() 
             };
+
+            c.Fields.Add(new KeyValuePair<string, IField>("test", new Field()
+                {
+                    Name = "test",
+                    KeywordValues = new List<Keyword>() { new Keyword()
+                    {
+                        Title = "My keyword",
+                        Key = "My key",
+                        Description = "My description",
+                        Id = "tcm:1-2-1024"
+                    }
+                }
+                }
+                ));
             return c;
         }
 

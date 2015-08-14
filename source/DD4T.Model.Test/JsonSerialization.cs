@@ -118,6 +118,21 @@ namespace DD4T.Model.Test
             }
          }
 
+        
+        [TestMethod]
+        public void DuplicateKeywordsIssue()
+        {
+            Component c = GetTestModel<Component>();
+            int nrOfKeywords = c.Fields["test"].KeywordValues.Count;
+            ISerializerService service = GetService(false);
+            string s = service.Serialize<Component>(c);
+            Component c2 = service.Deserialize<Component>(s);
+            string s2 = service.Serialize<Component>(c2);
+            Component c3 = service.Deserialize<Component>(s2);
+            Assert.IsTrue(c3.Fields["test"].KeywordValues.Count == nrOfKeywords);
+        }
+
+
 
         private T GetTestModel<T>() where T : IModel
         {
