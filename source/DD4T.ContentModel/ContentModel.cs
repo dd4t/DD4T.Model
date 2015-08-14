@@ -395,6 +395,16 @@ namespace DD4T.ContentModel
             set;
         }
 
+        /// <summary>
+        /// This method is used by NewtonSoft to determine whether or not to serialize the Keywords property
+        /// </summary>
+        /// <returns></returns>
+        public bool ShouldSerializeKeywords()
+        {
+            return false;
+        }
+
+        [XmlIgnore]
         public List<Keyword> Keywords
         {
             get
@@ -407,7 +417,6 @@ namespace DD4T.ContentModel
             }
         }
 
-        [XmlIgnore]
         public List<Keyword> KeywordValues
         {
             get;
