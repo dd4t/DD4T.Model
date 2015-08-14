@@ -58,18 +58,26 @@ namespace DD4T.Serialization
             return Initialize(defaultSerializerServerType, isCompressed);
         }
 
+        static object o = new object();
         private static BaseSerializerService Initialize(string typeName, bool isCompressed)
         {
             string key = string.Format("{0}_{1}", typeName, isCompressed);
             if (!serializerObjectsByPattern.ContainsKey(key))
             {
-                Type t = Type.GetType(typeName);
-                BaseSerializerService service = Activator.CreateInstance(t) as BaseSerializerService;
-                if (isCompressed)
+                lock (o)
                 {
-                    service.SerializationProperties = new SerializationProperties() { CompressionEnabled = true };
+                    if (!serializerObjectsByPattern.ContainsKey(key))
+                    {
+                        Type t = Type.GetType(typeName);
+                        BaseSerializerService service = Activator.CreateInstance(t) as BaseSerializerService;
+                        if (isCompressed)
+                        {
+                            service.SerializationProperties = new SerializationProperties() { CompressionEnabled = true };
+                        }
+                        serializerObjectsByPattern.Add(key, service);
+
+                    }
                 }
-                serializerObjectsByPattern.Add(key, service);
             }
             return serializerObjectsByPattern[key];
         }
