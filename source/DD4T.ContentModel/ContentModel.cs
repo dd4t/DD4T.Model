@@ -1,5 +1,4 @@
-﻿using DD4T.ContentModel.Factories;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -396,6 +395,16 @@ namespace DD4T.ContentModel
             set;
         }
 
+        /// <summary>
+        /// This method is used by NewtonSoft to determine whether or not to serialize the Keywords property
+        /// </summary>
+        /// <returns></returns>
+        public bool ShouldSerializeKeywords()
+        {
+            return false;
+        }
+
+        [XmlIgnore]
         public List<Keyword> Keywords
         {
             get
@@ -408,7 +417,6 @@ namespace DD4T.ContentModel
             }
         }
 
-        [XmlIgnore]
         public List<Keyword> KeywordValues
         {
             get;
@@ -574,38 +582,9 @@ namespace DD4T.ContentModel
 
     public class Binary : Component, IBinary
     {
-
-        public Binary(IBinaryFactory factory)
-        {
-            this.Factory = factory;
-        }
-        public Binary()
-        {
-        }
-
-        public byte[] BinaryData
-        {
-            get
-            {
-                if (this.binaryData == null && this.Factory != null)
-                {
-                    this.binaryData = this.Factory.FindBinaryContent(Url);
-                }
-                return this.binaryData;
-            }
-            set
-            {
-                this.binaryData = value;
-            }
-        }
-
+        public byte[] BinaryData { get; set; }
         public string VariantId { get; set; }
         public string Url { get; set; }
-        //public IMultimedia Multimedia { get; set; }
-
-        private byte[] binaryData = null;
-        private IBinaryFactory Factory { get; set; }
-
         public System.IO.Stream BinaryStream { get; set; }
     }
 
