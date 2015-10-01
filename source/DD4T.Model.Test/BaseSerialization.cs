@@ -136,34 +136,10 @@ namespace DD4T.Model.Test
 
         protected static void SetTestExtensionData(IModel model)
         {
-            Field testField1A = new Field()
-            {
-                Name = "testField1a",
-                Values = new List<string> { "this", "is", "a", "test" }
-            };
-            Field testField1B = new Field()
-            {
-                Name = "testField1b",
-                NumericValues = new List<double> { 1.0, 2.1, 3.2345 }
-            };
-            Field testField2A = new Field()
-            {
-                Name = "testField2a",
-                DateTimeValues = new List<DateTime> { new DateTime(1970, 12, 16) }
-            };
-
             ContentModel.Model modelImpl = (ContentModel.Model) model;
-            modelImpl.ExtensionData = new SerializableDictionary<string, IFieldSet, FieldSet>();
-
-            model.ExtensionData.Add("test1", new FieldSet
-            {
-                { testField1A.Name, testField1A },
-                { testField1B.Name, testField1B }
-            });
-            model.ExtensionData.Add("test2", new FieldSet
-            {
-                { testField2A.Name, testField2A }
-            });
+            modelImpl.AddExtensionProperty("test1", "testProperty1a", new [] { "this", "is", "a", "test" });
+            modelImpl.AddExtensionProperty("test1", "testProperty1b", 3.1415);
+            modelImpl.AddExtensionProperty("test2", "testProperty2a", new DateTime(1970, 12, 16));
         }
 
         protected abstract ISerializerService GetService(bool compressionEnabled);

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -457,6 +458,56 @@ namespace DD4T.ContentModel
         IDictionary<string, IFieldSet> IModel.ExtensionData
         {
             get { return ExtensionData; }
+        }
+
+        public void AddExtensionProperty(string sectionName, string propertyName, object value)
+        {
+            if (ExtensionData == null)
+            {
+                ExtensionData = new SerializableDictionary<string, IFieldSet, FieldSet>();
+            }
+
+            IFieldSet sectionFieldSet;
+            if (!ExtensionData.TryGetValue(sectionName, out sectionFieldSet))
+            {
+                sectionFieldSet = new FieldSet();
+                ExtensionData.Add(sectionName, sectionFieldSet);
+            }
+
+            IField propertyField;
+            if (!sectionFieldSet.TryGetValue(propertyName, out propertyField))
+            {
+                propertyField = new Field { Name = propertyName };
+                sectionFieldSet.Add(propertyName, propertyField);
+            }
+
+            if (value is IEnumerable && !(value is string))
+            {
+                foreach (object item in (IEnumerable) value)
+                {
+                    AddFieldValue(propertyField, item);
+                }
+            }
+            else
+            {
+                AddFieldValue(propertyField, value);
+            }
+        }
+
+        private static void AddFieldValue(IField field, object value)
+        {
+            if (value is int || value is long || value is double)
+            {
+                field.NumericValues.Add(Convert.ToDouble(value));
+            }
+            else if (value is DateTime)
+            {
+                field.DateTimeValues.Add((DateTime) value);
+            }
+            else
+            {
+                field.Values.Add(value.ToString());
+            }
         }
     }
 
