@@ -19,5 +19,6 @@
         int Version { get; }
         DateTime LastPublishedDate { get; }
         DateTime RevisionDate { get; }
+        string EclId { get; }
     }
 }

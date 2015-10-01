@@ -4,10 +4,11 @@ using DD4T.ContentModel;
 using DD4T.Serialization;
 using DD4T.ContentModel.Contracts.Serializing;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DD4T.Model.Test
 {
-    public class BaseSerialization
+    public abstract class BaseSerialization
     {
         public static string GetTestTitle<T>() where T : IModel
         {
@@ -132,5 +133,81 @@ namespace DD4T.Model.Test
             p.ComponentPresentations.Add(cp);
             return p;
         }
+
+        protected static void SetTestExtensionData(IModel model)
+        {
+            Field testField1A = new Field()
+            {
+                Name = "testField1a",
+                Values = new List<string> { "this", "is", "a", "test" }
+            };
+            Field testField1B = new Field()
+            {
+                Name = "testField1b",
+                NumericValues = new List<double> { 1.0, 2.1, 3.2345 }
+            };
+            Field testField2A = new Field()
+            {
+                Name = "testField2a",
+                DateTimeValues = new List<DateTime> { new DateTime(1970, 12, 16) }
+            };
+
+            ContentModel.Model modelImpl = (ContentModel.Model) model;
+            modelImpl.ExtensionData = new SerializableDictionary<string, IFieldSet, FieldSet>();
+
+            model.ExtensionData.Add("test1", new FieldSet
+            {
+                { testField1A.Name, testField1A },
+                { testField1B.Name, testField1B }
+            });
+            model.ExtensionData.Add("test2", new FieldSet
+            {
+                { testField2A.Name, testField2A }
+            });
+        }
+
+        protected abstract ISerializerService GetService(bool compressionEnabled);
+
+
+        protected T SerializeDeserializeModel<T>(IModel inputModel) where T: ContentModel.Model
+        {
+            ISerializerService serializer = GetService(compressionEnabled: false);
+
+            string serializedData = serializer.Serialize(inputModel);
+            Assert.IsNotNull(serializedData, "Serialized data");
+            Console.WriteLine(serializedData);
+
+            T deserializedModel = serializer.Deserialize<T>(serializedData);
+            Assert.IsNotNull(deserializedModel, "Deserialized Model");
+
+            return deserializedModel;
+        }
+
+
+        [TestMethod]
+        public void SerializeDeserializeComponentWithExtensionData()
+        {
+            IComponent testComponent = GenerateTestComponent();
+            SetTestExtensionData(testComponent);
+
+            IComponent deserializedComponent = SerializeDeserializeModel<Component>(testComponent);
+
+            Assert.IsNotNull(deserializedComponent.ExtensionData, "ExtensionData");
+            Assert.AreEqual(testComponent.ExtensionData.Count, deserializedComponent.ExtensionData.Count, "#ExtensionData");
+            Assert.IsTrue(deserializedComponent.ExtensionData.Keys.SequenceEqual(testComponent.ExtensionData.Keys), "ExtensionData.Keys");
+        }
+
+        [TestMethod]
+        public void SerializeDeserializeComponentWithEclId()
+        {
+            Component testComponent = (Component)GenerateTestComponent();
+            testComponent.EclId = "ecl:666-911";
+
+            IComponent deserializedComponent = SerializeDeserializeModel<Component>(testComponent);
+
+            Assert.AreEqual(testComponent.EclId, deserializedComponent.EclId);
+
+        }
+
     }
 }

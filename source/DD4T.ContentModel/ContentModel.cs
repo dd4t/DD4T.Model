@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
-using System.Xml;
 using System.Xml.Serialization;
 
 namespace DD4T.ContentModel
@@ -119,7 +118,7 @@ namespace DD4T.ContentModel
         { get { return Keywords.ToList<IKeyword>(); } }
     }
 
-    public class ComponentPresentation : IComponentPresentation
+    public class ComponentPresentation : Model, IComponentPresentation
     {
         [XmlIgnore]
         public IPage Page { get; set; }
@@ -238,6 +237,8 @@ namespace DD4T.ContentModel
         }
 
         public int Version { get; set; }
+
+        public string EclId { get; set; }
 
         #endregion Properties
 
@@ -447,7 +448,20 @@ namespace DD4T.ContentModel
         #endregion Constructors
     }
 
-    public abstract class TridionItem : IItem
+
+    public abstract class Model : IModel
+    {
+        public SerializableDictionary<string, IFieldSet, FieldSet> ExtensionData { get; set; }
+
+        [XmlIgnore]
+        IDictionary<string, IFieldSet> IModel.ExtensionData
+        {
+            get { return ExtensionData; }
+        }
+    }
+
+
+    public abstract class TridionItem : Model, IItem
     {
         public string Id { get; set; }
         public string Title { get; set; }
