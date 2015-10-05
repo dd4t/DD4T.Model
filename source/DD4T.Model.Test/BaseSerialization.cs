@@ -140,6 +140,7 @@ namespace DD4T.Model.Test
             modelImpl.AddExtensionProperty("test1", "testProperty1a", new [] { "this", "is", "a", "test" });
             modelImpl.AddExtensionProperty("test1", "testProperty1b", 3.1415);
             modelImpl.AddExtensionProperty("test2", "testProperty2a", new DateTime(1970, 12, 16));
+            modelImpl.AddExtensionProperty("test3", "dummyProperty", null); // This should not do anything
         }
 
         protected abstract ISerializerService GetService(bool compressionEnabled);

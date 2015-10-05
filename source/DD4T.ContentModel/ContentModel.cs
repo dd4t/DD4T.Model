@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Security.Permissions;
 using System.Text.RegularExpressions;
 using System.Xml.Serialization;
 
@@ -307,7 +308,7 @@ namespace DD4T.ContentModel
         [XmlIgnore]
         IList<string> IField.Values
         {
-            get { return Values as IList<string>; }
+            get { return Values; }
         }
         public List<double> NumericValues
         {
@@ -317,7 +318,7 @@ namespace DD4T.ContentModel
         [XmlIgnore]
         IList<double> IField.NumericValues
         {
-            get { return NumericValues as IList<double>; }
+            get { return NumericValues; }
         }
         public List<DateTime> DateTimeValues
         {
@@ -327,7 +328,7 @@ namespace DD4T.ContentModel
         [XmlIgnore]
         IList<DateTime> IField.DateTimeValues
         {
-            get { return DateTimeValues as IList<DateTime>; }
+            get { return DateTimeValues; }
         }
         public List<Component> LinkedComponentValues
         {
@@ -337,7 +338,10 @@ namespace DD4T.ContentModel
         [XmlIgnore]
         IList<IComponent> IField.LinkedComponentValues
         {
-            get { return LinkedComponentValues.ToList<IComponent>(); }
+            get
+            {
+                return (LinkedComponentValues == null) ? null : LinkedComponentValues.ToList<IComponent>();
+            }
         }
         public List<FieldSet> EmbeddedValues
         {
@@ -349,7 +353,7 @@ namespace DD4T.ContentModel
         {
             get
             {
-                return EmbeddedValues.Select<FieldSet, IFieldSet>(e => e as IFieldSet).ToList<IFieldSet>();
+                return (EmbeddedValues == null) ? null : EmbeddedValues.ToList<IFieldSet>();
             }
         }
 
@@ -364,7 +368,7 @@ namespace DD4T.ContentModel
         {
             get
             {
-                return EmbeddedSchema as ISchema;
+                return EmbeddedSchema;
             }
         }
 
@@ -428,12 +432,18 @@ namespace DD4T.ContentModel
         [XmlIgnore]
         IList<IKeyword> IField.Keywords
         {
-            get { return KeywordValues.ToList<IKeyword>(); }
+            get
+            {
+                return (KeywordValues == null) ? null : KeywordValues.ToList<IKeyword>();
+            }
         }
         [XmlIgnore]
         IList<IKeyword> IField.KeywordValues
         {
-            get { return KeywordValues.ToList<IKeyword>(); }
+            get
+            {
+                return (KeywordValues == null) ? null : KeywordValues.ToList<IKeyword>();
+            }
         }
 
         #endregion Properties
@@ -446,7 +456,65 @@ namespace DD4T.ContentModel
             this.DateTimeValues = new List<DateTime>();
             this.LinkedComponentValues = new List<Component>();
         }
+
+
+        /// <summary>
+        /// Initializes a new <see cref="Field"/> instance with a given name and value.
+        /// </summary>
+        /// <param name="name">The name of the field.</param>
+        /// <param name="value">The value. Will be mapped to <see cref="Values"/>, <see cref="NumericValues"/> or <see cref="DateTimeValues"/> depending on its type.</param>
+        /// <remarks>
+        /// Used by <see cref="Model.AddExtensionProperty"/> implementation. 
+        /// Note that this initializes only the necessary properties to keep the serialized data small.
+        /// </remarks>
+        internal Field(string name, object value)
+        {
+            Name = name;
+
+            if (value is IEnumerable && !(value is string))
+            {
+                foreach (object item in (IEnumerable) value)
+                {
+                    AddFieldValue(item);
+                }
+            }
+            else if (value != null)
+            {
+                AddFieldValue(value);
+            }
+        }
         #endregion Constructors
+
+        internal void AddFieldValue(object value)
+        {
+            if (value is int || value is long || value is double)
+            {
+                if (NumericValues == null)
+                {
+                    NumericValues = new List<double>();
+                }
+                NumericValues.Add(Convert.ToDouble(value));
+                FieldType = FieldType.Number;
+            }
+            else if (value is DateTime)
+            {
+                if (DateTimeValues == null)
+                {
+                    DateTimeValues = new List<DateTime>();
+                }
+                DateTimeValues.Add((DateTime) value);
+                FieldType = FieldType.Date;
+            }
+            else
+            {
+                if (Values == null)
+                {
+                    Values = new List<string>();
+                }
+                Values.Add(value.ToString());
+                FieldType = FieldType.Text;
+            }
+        }
     }
 
 
@@ -462,6 +530,12 @@ namespace DD4T.ContentModel
 
         public void AddExtensionProperty(string sectionName, string propertyName, object value)
         {
+            if (value == null)
+            {
+                // For a null value we just don't do anything rather than creating a field with a null value (or add a null value to existing field).
+                return;
+            }
+
             if (ExtensionData == null)
             {
                 ExtensionData = new SerializableDictionary<string, IFieldSet, FieldSet>();
@@ -477,39 +551,15 @@ namespace DD4T.ContentModel
             IField propertyField;
             if (!sectionFieldSet.TryGetValue(propertyName, out propertyField))
             {
-                propertyField = new Field { Name = propertyName };
+                propertyField = new Field(propertyName, value);
                 sectionFieldSet.Add(propertyName, propertyField);
             }
-
-            if (value is IEnumerable && !(value is string))
-            {
-                foreach (object item in (IEnumerable) value)
-                {
-                    AddFieldValue(propertyField, item);
-                }
-            }
             else
             {
-                AddFieldValue(propertyField, value);
+                ((Field)propertyField).AddFieldValue(value);
             }
         }
-
-        private static void AddFieldValue(IField field, object value)
-        {
-            if (value is int || value is long || value is double)
-            {
-                field.NumericValues.Add(Convert.ToDouble(value));
-            }
-            else if (value is DateTime)
-            {
-                field.DateTimeValues.Add((DateTime) value);
-            }
-            else
-            {
-                field.Values.Add(value.ToString());
-            }
-        }
-    }
+   }
 
 
     public abstract class TridionItem : Model, IItem
