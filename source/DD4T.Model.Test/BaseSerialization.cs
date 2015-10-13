@@ -1,7 +1,6 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using DD4T.ContentModel;
-using DD4T.Serialization;
 using DD4T.ContentModel.Contracts.Serializing;
 using System.Collections.Generic;
 using System.Linq;
@@ -141,6 +140,8 @@ namespace DD4T.Model.Test
             modelImpl.AddExtensionProperty("test1", "testProperty1b", 3.1415);
             modelImpl.AddExtensionProperty("test2", "testProperty2a", new DateTime(1970, 12, 16));
             modelImpl.AddExtensionProperty("test3", "dummyProperty", null); // This should not do anything
+
+            Assert.IsFalse(modelImpl.ExtensionData.ContainsKey("test3"), "Adding a null value should not do anything.");
         }
 
         protected abstract ISerializerService GetService(bool compressionEnabled);
@@ -161,6 +162,40 @@ namespace DD4T.Model.Test
         }
 
 
+        protected void AssertEqualFieldSets(IFieldSet expected, IFieldSet actual)
+        {
+            Assert.IsTrue(actual.Keys.SequenceEqual(expected.Keys), "FieldSets have different Keys.");
+
+            foreach (IField field in expected.Values)
+            {
+                IField deserializedField = actual[field.Name];
+                Assert.AreEqual(field.FieldType, deserializedField.FieldType, "FieldType");
+                switch (field.FieldType)
+                {
+                    case FieldType.Number:
+                        Assert.IsNotNull(deserializedField.NumericValues, "NumericValues");
+                        Assert.IsTrue(deserializedField.NumericValues.SequenceEqual(field.NumericValues), "NumericValues");
+                        break;
+
+                    case FieldType.Date:
+                        Assert.IsNotNull(deserializedField.DateTimeValues, "DateTimeValues");
+                        Assert.IsTrue(deserializedField.DateTimeValues.SequenceEqual(field.DateTimeValues), "DateTimeValues");
+                        break;
+
+                    case FieldType.Embedded:
+                        Assert.IsNotNull(deserializedField.EmbeddedValues, "EmbeddedValues");
+                        Assert.AreEqual(deserializedField.EmbeddedValues.Count, field.EmbeddedValues.Count, "#EmbeddedValues");
+                        break;
+
+                    default:
+                        Assert.IsNotNull(deserializedField.Values, "Values");
+                        Assert.IsTrue(deserializedField.Values.SequenceEqual(field.Values), "Values");
+                        break;
+                }
+            }
+        }
+
+
         [TestMethod]
         public void SerializeDeserializeComponentWithExtensionData()
         {
@@ -172,6 +207,12 @@ namespace DD4T.Model.Test
             Assert.IsNotNull(deserializedComponent.ExtensionData, "ExtensionData");
             Assert.AreEqual(testComponent.ExtensionData.Count, deserializedComponent.ExtensionData.Count, "#ExtensionData");
             Assert.IsTrue(deserializedComponent.ExtensionData.Keys.SequenceEqual(testComponent.ExtensionData.Keys), "ExtensionData.Keys");
+
+            foreach (KeyValuePair<string, IFieldSet> extensionDataSection in testComponent.ExtensionData)
+            {
+                IFieldSet deserializedFieldSet = deserializedComponent.ExtensionData[extensionDataSection.Key];
+                AssertEqualFieldSets(extensionDataSection.Value, deserializedFieldSet);
+            }
         }
 
         [TestMethod]

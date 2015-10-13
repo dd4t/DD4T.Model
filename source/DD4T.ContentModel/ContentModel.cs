@@ -285,6 +285,28 @@ namespace DD4T.ContentModel
 
     public class Field : IField
     {
+        #region JSON serialization control
+        // NOTE: we're simply supressing some properties from JSON serialization here. Normally you would use the [JsonIgnore] attribute for that purpose.
+        // However, we are using JSON.NET conditional serialization feature (ShouldSerializeXYZ) here to avoid a direct reference to JSON.NET.
+
+        /// <summary>
+        /// Supresses JSON serialization of the <see cref="Value"/> property (which is only a convenience property derived from <see cref="Values"/>)
+        /// </summary>
+        public bool ShouldSerializeValue()
+        {
+            return false;
+        }
+
+        /// <summary>
+        /// Supresses JSON serialization of the <see cref="Keywords"/> property (which is only a legacy property derived from <see cref="KeywordValues"/>)
+        /// </summary>
+        public bool ShouldSerializeKeywords()
+        {
+            return false;
+        }
+        #endregion
+
+
         #region Properties
         public string Name
         {
@@ -399,15 +421,6 @@ namespace DD4T.ContentModel
         {
             get;
             set;
-        }
-
-        /// <summary>
-        /// This method is used by NewtonSoft to determine whether or not to serialize the Keywords property
-        /// </summary>
-        /// <returns></returns>
-        public bool ShouldSerializeKeywords()
-        {
-            return false;
         }
 
         [XmlIgnore]
