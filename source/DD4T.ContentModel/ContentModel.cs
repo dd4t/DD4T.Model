@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -142,12 +143,20 @@ namespace DD4T.ContentModel
         public int OrderOnPage { get; set; }
 
         public List<Condition> Conditions { get; set; }
+        public IList<string> Expressions { get; set; }
 
         [XmlIgnore]
         IList<ICondition> IComponentPresentation.Conditions
         {
             get { return Conditions.ToList<ICondition>(); }
         }
+
+        [XmlIgnore]
+        IList<string> IComponentPresentation.Expressions
+        {
+            get; set;
+        } 
+
     }
 
     public class PageTemplate : RepositoryLocalItem, IPageTemplate
