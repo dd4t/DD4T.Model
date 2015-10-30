@@ -142,7 +142,7 @@ namespace DD4T.ContentModel
         public int OrderOnPage { get; set; }
 
         public List<Condition> Conditions { get; set; }
-        public IList<string> Expressions { get; }
+        public IList<string> Expressions { get; set; }
 
         [XmlIgnore]
         IList<ICondition> IComponentPresentation.Conditions
