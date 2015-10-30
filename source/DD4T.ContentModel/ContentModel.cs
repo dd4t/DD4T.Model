@@ -142,7 +142,7 @@ namespace DD4T.ContentModel
         public int OrderOnPage { get; set; }
 
         public List<Condition> Conditions { get; set; }
-        public IList<string> Expressions { get; set; }
+        public IList<string> Expressions { get; }
 
         [XmlIgnore]
         IList<ICondition> IComponentPresentation.Conditions
@@ -151,7 +151,10 @@ namespace DD4T.ContentModel
         }
 
         [XmlIgnore]
-        IList<string> IComponentPresentation.Expressions { get; set; }
+        IList<string> IComponentPresentation.Expressions
+        {
+            get { return Expressions.ToList<string>(); }
+        }
     }
 
     public class PageTemplate : RepositoryLocalItem, IPageTemplate

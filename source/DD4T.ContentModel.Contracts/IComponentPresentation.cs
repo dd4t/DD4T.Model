@@ -11,6 +11,6 @@ namespace DD4T.ContentModel.Contracts
         string RenderedContent { get; }
         int OrderOnPage { get; set; }
         IList<ICondition> Conditions { get; }
-        IList<string> Expressions { get; set; }
+        IList<string> Expressions { get; }
     }
 }
