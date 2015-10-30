@@ -3,8 +3,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using DD4T.ContentModel;
 using DD4T.Serialization;
 using DD4T.ContentModel.Contracts.Serializing;
-using System.Timers;
 using System.Diagnostics;
+using DD4T.ContentModel.Contracts;
 
 namespace DD4T.Model.Test
 {

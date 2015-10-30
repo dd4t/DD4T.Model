@@ -1,10 +1,6 @@
-﻿namespace DD4T.ContentModel
+﻿
+namespace DD4T.ContentModel.Contracts
 {
-    #region Usings
-    using System.Collections.Generic;
-    using System;
-    #endregion Usings
-
     public interface IPageTemplate : ITemplate
     {
         string FileExtension { get; }

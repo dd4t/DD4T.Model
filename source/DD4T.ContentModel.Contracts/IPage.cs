@@ -1,8 +1,8 @@
-﻿namespace DD4T.ContentModel
-{
-    using System.Collections.Generic;
+﻿    using System.Collections.Generic;
     using System;
 
+namespace DD4T.ContentModel.Contracts
+{
     public interface IPage : IRepositoryLocal, IViewable
     {
         [Obsolete]

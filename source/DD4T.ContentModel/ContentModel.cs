@@ -4,8 +4,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
-using System.Xml;
 using System.Xml.Serialization;
+using DD4T.ContentModel.Contracts;
 
 namespace DD4T.ContentModel
 {
@@ -142,12 +142,16 @@ namespace DD4T.ContentModel
         public int OrderOnPage { get; set; }
 
         public List<Condition> Conditions { get; set; }
+        public IList<string> Expressions { get; set; }
 
         [XmlIgnore]
         IList<ICondition> IComponentPresentation.Conditions
         {
             get { return Conditions.ToList<ICondition>(); }
         }
+
+        [XmlIgnore]
+        IList<string> IComponentPresentation.Expressions { get; set; }
     }
 
     public class PageTemplate : RepositoryLocalItem, IPageTemplate
@@ -511,12 +515,12 @@ namespace DD4T.ContentModel
                 }
             }
         }
-        public TcmUri(int PublicationId, int ItemId, int ItemTypeId, int Version)
+        public TcmUri(int publicationId, int itemId, int itemTypeId, int version)
         {
-            this.PublicationId = PublicationId;
-            this.ItemId = ItemId;
-            this.ItemTypeId = ItemTypeId;
-            this.Version = Version;
+            this.PublicationId = publicationId;
+            this.ItemId = itemId;
+            this.ItemTypeId = itemTypeId;
+            this.Version = version;
         }
         public override string ToString()
         {

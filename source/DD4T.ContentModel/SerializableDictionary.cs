@@ -7,8 +7,7 @@ using System.Xml.Serialization;
 
 namespace DD4T.ContentModel
 {
-
-    /// <summary
+    /// <summary>
     /// The System.Collections.Generic.Dictionary class from .NET 2.0 is unfortunately not serializable.
     /// This class was written by Paul Welter and is used with gratitude. See http://weblogs.asp.net/pwelter34/archive/2006/05/03/444961.aspx for more details.
     /// </summary>
