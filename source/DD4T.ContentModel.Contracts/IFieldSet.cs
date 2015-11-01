@@ -1,11 +1,7 @@
-﻿namespace DD4T.ContentModel
+﻿using System.Collections.Generic;
+
+namespace DD4T.ContentModel.Contracts
 {
-    #region Usings
-    using System;
-    using System.Collections.Generic;
-    using System.Runtime.Serialization;
-    using System.Xml.Serialization;
-    #endregion Usings
 
     public interface IFieldSet : IDictionary<string, IField>
     {

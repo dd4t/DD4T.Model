@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-namespace DD4T.ContentModel
+namespace DD4T.ContentModel.Contracts
 {
     public interface ITemplate : IRepositoryLocal
     {

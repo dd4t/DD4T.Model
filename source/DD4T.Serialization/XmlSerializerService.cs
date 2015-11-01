@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using DD4T.ContentModel;
 using System.IO;
@@ -8,13 +8,13 @@ using System.Xml;
 using System.Xml.Serialization;
 using Microsoft.Xml.Serialization.GeneratedAssembly;
 using System.Text.RegularExpressions;
-using DD4T.ContentModel.Contracts.Serializing;
+using DD4T.ContentModel.Contracts;
 
 namespace DD4T.Serialization
 {
     public class XmlSerializerService : BaseSerializerService
     {
-        private static Dictionary<Type, XmlSerializer> _xmlSerializers = new Dictionary<Type, XmlSerializer>();
+        private static readonly Dictionary<Type, XmlSerializer> _xmlSerializers = new Dictionary<Type, XmlSerializer>();
         private XmlSerializer GetXmlSerializer<T>() where T: XmlSerializer
         {
             if (! _xmlSerializers.ContainsKey(typeof(T)))
@@ -25,9 +25,8 @@ namespace DD4T.Serialization
             return _xmlSerializers[typeof(T)];
         }
 
-        private string Serialize(object o, XmlSerializer serializer)
+        private static string Serialize(object o, XmlSerializer serializer)
         {
-            StringWriter sw = new StringWriter();
             MemoryStream ms = new MemoryStream();
             XmlWriter writer = new XmlTextWriterFormattedNoDeclaration(ms, Encoding.UTF8);
             string outputValue;
@@ -76,7 +75,6 @@ namespace DD4T.Serialization
             // if the requested type is IComponentPresentation, there is a possiblity that the data 
             // provided to us actually contains a Component instead. In that case we need to add a 
             // dummy CT / CP around the Component and return that!
-
             
             if (((SerializationProperties)SerializationProperties).CompressionEnabled)
             {
@@ -123,15 +121,15 @@ namespace DD4T.Serialization
     }
     public class XmlTextWriterFormattedNoDeclaration : XmlTextWriter
     {
-        public XmlTextWriterFormattedNoDeclaration(System.IO.TextWriter w)
+        public XmlTextWriterFormattedNoDeclaration(TextWriter w)
             : base(w)
         {
-            Formatting = System.Xml.Formatting.Indented;
+            Formatting = Formatting.Indented;
         }
-        public XmlTextWriterFormattedNoDeclaration(System.IO.MemoryStream ms, Encoding enc)
+        public XmlTextWriterFormattedNoDeclaration(MemoryStream ms, Encoding enc)
             : base(ms, enc)
         {
-            Formatting = System.Xml.Formatting.Indented;
+            Formatting = Formatting.Indented;
         }
         public override void WriteStartDocument() { } // suppress
     }

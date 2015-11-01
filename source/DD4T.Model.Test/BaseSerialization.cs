@@ -1,9 +1,7 @@
 ﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using DD4T.ContentModel;
-using DD4T.Serialization;
-using DD4T.ContentModel.Contracts.Serializing;
 using System.Collections.Generic;
+using DD4T.ContentModel.Contracts;
 
 namespace DD4T.Model.Test
 {
@@ -116,19 +114,25 @@ namespace DD4T.Model.Test
                     Id = "tcm:0-2-1",
                     Title = "Test - owningpublication.title"
                 },
-                ComponentPresentations = new System.Collections.Generic.List<ComponentPresentation>()
+                ComponentPresentations = new List<ComponentPresentation>()
             };
             List<Condition> conditions = new List<Condition>();
-            conditions.Add(new CustomerCharacteristicCondition()
-            {
-                Name = "CustomersOnly",
-                Negate = false,
-                Operator = ConditionOperator.Equals,
-                Value = "ID"
-            }
-                );
+            conditions.Add(new CustomerCharacteristicCondition
+                {
+                    Name = "CustomersOnly",
+                    Negate = false,
+                    Operator = ConditionOperator.Equals,
+                    Value = "ID"
+                }
+            );
+
+            //List<string> expression = new List<string>();
+            //expression.Add("CustomersOnly");
+
             ComponentPresentation cp = (ComponentPresentation) GenerateTestComponentPresentation();
             cp.Conditions = conditions;
+            //cp.Expressions = expression;
+
             p.ComponentPresentations.Add(cp);
             return p;
         }

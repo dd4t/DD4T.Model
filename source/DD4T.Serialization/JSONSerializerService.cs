@@ -1,16 +1,14 @@
 ﻿using DD4T.ContentModel;
-using DD4T.ContentModel.Contracts.Serializing;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System;
 using System.IO;
+using DD4T.ContentModel.Contracts;
 
 namespace DD4T.Serialization
 {
     public class JSONSerializerService : BaseSerializerService
     {
-
-
         private JsonSerializer _serializer = null;
         public JsonSerializer Serializer
         {

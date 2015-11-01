@@ -1,7 +1,8 @@
-﻿namespace DD4T.ContentModel
+﻿using System.Collections.Generic;
+using System;
+
+namespace DD4T.ContentModel.Contracts
 {
-    using System.Collections.Generic;
-    using System;
 
     public interface IComponent : IRepositoryLocal, IViewable
     {
