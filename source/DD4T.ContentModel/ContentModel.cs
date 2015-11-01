@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Security.Permissions;
 using System.Text.RegularExpressions;
-using System.Xml;
 using System.Xml.Serialization;
 
 namespace DD4T.ContentModel
@@ -119,7 +120,7 @@ namespace DD4T.ContentModel
         { get { return Keywords.ToList<IKeyword>(); } }
     }
 
-    public class ComponentPresentation : IComponentPresentation
+    public class ComponentPresentation : Model, IComponentPresentation
     {
         [XmlIgnore]
         public IPage Page { get; set; }
@@ -239,6 +240,8 @@ namespace DD4T.ContentModel
 
         public int Version { get; set; }
 
+        public string EclId { get; set; }
+
         #endregion Properties
 
         #region constructors
@@ -282,6 +285,28 @@ namespace DD4T.ContentModel
 
     public class Field : IField
     {
+        #region JSON serialization control
+        // NOTE: we're simply supressing some properties from JSON serialization here. Normally you would use the [JsonIgnore] attribute for that purpose.
+        // However, we are using JSON.NET conditional serialization feature (ShouldSerializeXYZ) here to avoid a direct reference to JSON.NET.
+
+        /// <summary>
+        /// Supresses JSON serialization of the <see cref="Value"/> property (which is only a convenience property derived from <see cref="Values"/>)
+        /// </summary>
+        public bool ShouldSerializeValue()
+        {
+            return false;
+        }
+
+        /// <summary>
+        /// Supresses JSON serialization of the <see cref="Keywords"/> property (which is only a legacy property derived from <see cref="KeywordValues"/>)
+        /// </summary>
+        public bool ShouldSerializeKeywords()
+        {
+            return false;
+        }
+        #endregion
+
+
         #region Properties
         public string Name
         {
@@ -305,7 +330,7 @@ namespace DD4T.ContentModel
         [XmlIgnore]
         IList<string> IField.Values
         {
-            get { return Values as IList<string>; }
+            get { return Values; }
         }
         public List<double> NumericValues
         {
@@ -315,7 +340,7 @@ namespace DD4T.ContentModel
         [XmlIgnore]
         IList<double> IField.NumericValues
         {
-            get { return NumericValues as IList<double>; }
+            get { return NumericValues; }
         }
         public List<DateTime> DateTimeValues
         {
@@ -325,7 +350,7 @@ namespace DD4T.ContentModel
         [XmlIgnore]
         IList<DateTime> IField.DateTimeValues
         {
-            get { return DateTimeValues as IList<DateTime>; }
+            get { return DateTimeValues; }
         }
         public List<Component> LinkedComponentValues
         {
@@ -335,7 +360,10 @@ namespace DD4T.ContentModel
         [XmlIgnore]
         IList<IComponent> IField.LinkedComponentValues
         {
-            get { return LinkedComponentValues.ToList<IComponent>(); }
+            get
+            {
+                return (LinkedComponentValues == null) ? null : LinkedComponentValues.ToList<IComponent>();
+            }
         }
         public List<FieldSet> EmbeddedValues
         {
@@ -347,7 +375,7 @@ namespace DD4T.ContentModel
         {
             get
             {
-                return EmbeddedValues.Select<FieldSet, IFieldSet>(e => e as IFieldSet).ToList<IFieldSet>();
+                return (EmbeddedValues == null) ? null : EmbeddedValues.ToList<IFieldSet>();
             }
         }
 
@@ -362,7 +390,7 @@ namespace DD4T.ContentModel
         {
             get
             {
-                return EmbeddedSchema as ISchema;
+                return EmbeddedSchema;
             }
         }
 
@@ -395,15 +423,6 @@ namespace DD4T.ContentModel
             set;
         }
 
-        /// <summary>
-        /// This method is used by NewtonSoft to determine whether or not to serialize the Keywords property
-        /// </summary>
-        /// <returns></returns>
-        public bool ShouldSerializeKeywords()
-        {
-            return false;
-        }
-
         [XmlIgnore]
         public List<Keyword> Keywords
         {
@@ -426,12 +445,18 @@ namespace DD4T.ContentModel
         [XmlIgnore]
         IList<IKeyword> IField.Keywords
         {
-            get { return KeywordValues.ToList<IKeyword>(); }
+            get
+            {
+                return (KeywordValues == null) ? null : KeywordValues.ToList<IKeyword>();
+            }
         }
         [XmlIgnore]
         IList<IKeyword> IField.KeywordValues
         {
-            get { return KeywordValues.ToList<IKeyword>(); }
+            get
+            {
+                return (KeywordValues == null) ? null : KeywordValues.ToList<IKeyword>();
+            }
         }
 
         #endregion Properties
@@ -444,10 +469,113 @@ namespace DD4T.ContentModel
             this.DateTimeValues = new List<DateTime>();
             this.LinkedComponentValues = new List<Component>();
         }
+
+
+        /// <summary>
+        /// Initializes a new <see cref="Field"/> instance with a given name and value.
+        /// </summary>
+        /// <param name="name">The name of the field.</param>
+        /// <param name="value">The value. Will be mapped to <see cref="Values"/>, <see cref="NumericValues"/> or <see cref="DateTimeValues"/> depending on its type.</param>
+        /// <remarks>
+        /// Used by <see cref="Model.AddExtensionProperty"/> implementation. 
+        /// Note that this initializes only the necessary properties to keep the serialized data small.
+        /// </remarks>
+        internal Field(string name, object value)
+        {
+            Name = name;
+
+            if (value is IEnumerable && !(value is string))
+            {
+                foreach (object item in (IEnumerable) value)
+                {
+                    AddFieldValue(item);
+                }
+            }
+            else if (value != null)
+            {
+                AddFieldValue(value);
+            }
+        }
         #endregion Constructors
+
+        internal void AddFieldValue(object value)
+        {
+            if (value is int || value is long || value is double)
+            {
+                if (NumericValues == null)
+                {
+                    NumericValues = new List<double>();
+                }
+                NumericValues.Add(Convert.ToDouble(value));
+                FieldType = FieldType.Number;
+            }
+            else if (value is DateTime)
+            {
+                if (DateTimeValues == null)
+                {
+                    DateTimeValues = new List<DateTime>();
+                }
+                DateTimeValues.Add((DateTime) value);
+                FieldType = FieldType.Date;
+            }
+            else
+            {
+                if (Values == null)
+                {
+                    Values = new List<string>();
+                }
+                Values.Add(value.ToString());
+                FieldType = FieldType.Text;
+            }
+        }
     }
 
-    public abstract class TridionItem : IItem
+
+    public abstract class Model : IModel
+    {
+        public SerializableDictionary<string, IFieldSet, FieldSet> ExtensionData { get; set; }
+
+        [XmlIgnore]
+        IDictionary<string, IFieldSet> IModel.ExtensionData
+        {
+            get { return ExtensionData; }
+        }
+
+        public void AddExtensionProperty(string sectionName, string propertyName, object value)
+        {
+            if (value == null)
+            {
+                // For a null value we just don't do anything rather than creating a field with a null value (or add a null value to existing field).
+                return;
+            }
+
+            if (ExtensionData == null)
+            {
+                ExtensionData = new SerializableDictionary<string, IFieldSet, FieldSet>();
+            }
+
+            IFieldSet sectionFieldSet;
+            if (!ExtensionData.TryGetValue(sectionName, out sectionFieldSet))
+            {
+                sectionFieldSet = new FieldSet();
+                ExtensionData.Add(sectionName, sectionFieldSet);
+            }
+
+            IField propertyField;
+            if (!sectionFieldSet.TryGetValue(propertyName, out propertyField))
+            {
+                propertyField = new Field(propertyName, value);
+                sectionFieldSet.Add(propertyName, propertyField);
+            }
+            else
+            {
+                ((Field)propertyField).AddFieldValue(value);
+            }
+        }
+   }
+
+
+    public abstract class TridionItem : Model, IItem
     {
         public string Id { get; set; }
         public string Title { get; set; }

@@ -5,6 +5,8 @@ using DD4T.Serialization;
 using DD4T.ContentModel.Contracts.Serializing;
 using System.Timers;
 using System.Diagnostics;
+using System.Linq;
+using System.Runtime.Remoting.Channels;
 
 namespace DD4T.Model.Test
 {
@@ -26,10 +28,14 @@ namespace DD4T.Model.Test
         {
             testComponent = GenerateTestComponent();
             testComponentPresentation = GenerateTestComponentPresentation();
-            testComponentJson = GetService(false).Serialize<IComponent>(testComponent);
-            testComponentJsonCompressed = GetService(true).Serialize<IComponent>(testComponent);
-            testComponentPresentationJson = GetService(false).Serialize<IComponentPresentation>(testComponentPresentation);
-            testComponentPresentationJsonCompressed = GetService(true).Serialize<IComponentPresentation>(testComponentPresentation);
+
+            // Method GetService() is a (virtual) instance method now, so we need a temp instance.
+            JsonSerialization testInstance = new JsonSerialization();
+
+            testComponentJson = testInstance.GetService(false).Serialize<IComponent>(testComponent);
+            testComponentJsonCompressed = testInstance.GetService(true).Serialize<IComponent>(testComponent);
+            testComponentPresentationJson = testInstance.GetService(false).Serialize<IComponentPresentation>(testComponentPresentation);
+            testComponentPresentationJsonCompressed = testInstance.GetService(true).Serialize<IComponentPresentation>(testComponentPresentation);
         }
 
 
@@ -133,7 +139,6 @@ namespace DD4T.Model.Test
         }
 
 
-
         private T GetTestModel<T>() where T : IModel
         {
             if (typeof(T) == typeof(Component))
@@ -225,7 +230,7 @@ namespace DD4T.Model.Test
             stopwatch.Stop();
         }
         
-        private static ISerializerService GetService(bool compressionEnabled)
+        protected override ISerializerService GetService(bool compressionEnabled)
         {
             if (!services.ContainsKey(compressionEnabled))
             {

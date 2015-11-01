@@ -17,10 +17,13 @@ namespace DD4T.Serialization
             get
             {
                 if (_serializer == null)
-                {  
-                    _serializer = new JsonSerializer();
-                    _serializer.NullValueHandling = NullValueHandling.Ignore;
+                {
+                    _serializer = new JsonSerializer
+                    {
+                        NullValueHandling = NullValueHandling.Ignore
+                    };
                     _serializer.Converters.Add(new FieldConverter());
+                    _serializer.Converters.Add(new FieldSetConverter());
                 }
 
                 return _serializer;
@@ -84,4 +87,13 @@ namespace DD4T.Serialization
             return new Field();
         }
     }
+
+    public class FieldSetConverter : CustomCreationConverter<IFieldSet>
+    {
+        public override IFieldSet Create(Type objectType)
+        {
+            return new FieldSet();
+        }
+    }
+
 }

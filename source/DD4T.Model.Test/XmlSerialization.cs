@@ -30,12 +30,16 @@ namespace DD4T.Model.Test
             testComponent = GenerateTestComponent();
             testComponentPresentation = GenerateTestComponentPresentation();
             testPage = GenerateTestPage();
-            testComponentXml = GetService(false).Serialize<IComponent>(testComponent);
-            testComponentXmlCompressed = GetService(true).Serialize<IComponent>(testComponent);
-            testComponentPresentationXml = GetService(false).Serialize<IComponentPresentation>(testComponentPresentation);
-            testComponentPresentationXmlCompressed = GetService(true).Serialize<IComponentPresentation>(testComponentPresentation);
-            testPageXml = GetService(false).Serialize<IPage>(testPage);
-            testPageXmlCompressed = GetService(true).Serialize<IPage>(testPage);
+
+            // Method GetService() is a (virtual) instance method now, so we need a temp instance.
+            XmlSerialization testInstance = new XmlSerialization();
+
+            testComponentXml = testInstance.GetService(false).Serialize<IComponent>(testComponent);
+            testComponentXmlCompressed = testInstance.GetService(true).Serialize<IComponent>(testComponent);
+            testComponentPresentationXml = testInstance.GetService(false).Serialize<IComponentPresentation>(testComponentPresentation);
+            testComponentPresentationXmlCompressed = testInstance.GetService(true).Serialize<IComponentPresentation>(testComponentPresentation);
+            testPageXml = testInstance.GetService(false).Serialize<IPage>(testPage);
+            testPageXmlCompressed = testInstance.GetService(true).Serialize<IPage>(testPage);
         }
 
 
@@ -263,7 +267,7 @@ namespace DD4T.Model.Test
             stopwatch.Stop();
         }
 
-        private static ISerializerService GetService(bool compressionEnabled)
+        protected override ISerializerService GetService(bool compressionEnabled)
         {
             if (!services.ContainsKey(compressionEnabled))
             {
