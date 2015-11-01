@@ -1,5 +1,5 @@
-﻿    using System.Collections.Generic;
-    using System;
+﻿using System.Collections.Generic;
+using System;
 
 namespace DD4T.ContentModel.Contracts
 {

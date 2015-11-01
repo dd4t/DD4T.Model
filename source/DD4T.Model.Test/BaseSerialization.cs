@@ -117,16 +117,22 @@ namespace DD4T.Model.Test
                 ComponentPresentations = new List<ComponentPresentation>()
             };
             List<Condition> conditions = new List<Condition>();
-            conditions.Add(new CustomerCharacteristicCondition()
-            {
-                Name = "CustomersOnly",
-                Negate = false,
-                Operator = ConditionOperator.Equals,
-                Value = "ID"
-            }
-                );
+            conditions.Add(new CustomerCharacteristicCondition
+                {
+                    Name = "CustomersOnly",
+                    Negate = false,
+                    Operator = ConditionOperator.Equals,
+                    Value = "ID"
+                }
+            );
+
+            //List<string> expression = new List<string>();
+            //expression.Add("CustomersOnly");
+
             ComponentPresentation cp = (ComponentPresentation) GenerateTestComponentPresentation();
             cp.Conditions = conditions;
+            //cp.Expressions = expression;
+
             p.ComponentPresentations.Add(cp);
             return p;
         }
