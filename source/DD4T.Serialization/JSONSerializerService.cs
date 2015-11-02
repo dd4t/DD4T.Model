@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System;
 using System.IO;
+using DD4T.ContentModel.Contracts;
 
 namespace DD4T.Serialization
 {

@@ -4,6 +4,7 @@ using DD4T.ContentModel;
 using DD4T.ContentModel.Contracts.Serializing;
 using System.Collections.Generic;
 using System.Linq;
+using DD4T.ContentModel.Contracts;
 
 namespace DD4T.Model.Test
 {

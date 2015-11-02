@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Serialization;
-using System.Security.Permissions;
 using System.Text.RegularExpressions;
 using System.Xml.Serialization;
+using DD4T.ContentModel.Contracts;
 
 namespace DD4T.ContentModel
 {
@@ -149,6 +149,14 @@ namespace DD4T.ContentModel
         {
             get { return Conditions.ToList<ICondition>(); }
         }
+
+        public List<string> Expressions { get; set; }
+
+        [XmlIgnore]
+        IList<string> IComponentPresentation.Expressions
+        {
+            get { return Expressions.ToList<string>(); }
+        } 
     }
 
     public class PageTemplate : RepositoryLocalItem, IPageTemplate
