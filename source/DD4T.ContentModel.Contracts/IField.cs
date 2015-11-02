@@ -1,10 +1,8 @@
-﻿namespace DD4T.ContentModel
-{
-    #region Usings
-    using System;
-    using System.Collections.Generic;
-    #endregion Usings
+﻿using System;
+using System.Collections.Generic;
 
+namespace DD4T.ContentModel.Contracts
+{
     public interface IField
     {
         string CategoryId { get; }

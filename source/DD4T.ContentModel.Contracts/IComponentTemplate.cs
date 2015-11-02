@@ -1,7 +1,5 @@
-﻿namespace DD4T.ContentModel
+﻿namespace DD4T.ContentModel.Contracts
 {
-    using System.Collections.Generic;
-    using System;
 
     public interface IComponentTemplate : ITemplate
     {

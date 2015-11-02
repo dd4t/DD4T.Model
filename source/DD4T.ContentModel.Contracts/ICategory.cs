@@ -1,9 +1,7 @@
-﻿namespace DD4T.ContentModel
-{
-    #region Usings
-    using System.Collections.Generic;
-    #endregion Usings
+﻿using System.Collections.Generic;
 
+namespace DD4T.ContentModel.Contracts
+{
     public interface ICategory : IRepositoryLocal
     {
         IList<IKeyword> Keywords { get; }

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace DD4T.ContentModel
+namespace DD4T.ContentModel.Contracts
 {
     public interface IComponentPresentation : IModel
     {
