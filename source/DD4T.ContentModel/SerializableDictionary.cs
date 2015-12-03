@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Runtime.Serialization;
 using System.Xml;
 using System.Xml.Schema;
@@ -17,13 +18,10 @@ namespace DD4T.ContentModel
     [XmlRoot("dictionary")]
     [Serializable]
     public class SerializableDictionary<TKey, TValue, TImplValue>
-        : Dictionary<TKey, TValue>, IXmlSerializable
+        : Dictionary<string, TValue>, IXmlSerializable
     {
-        public SerializableDictionary() : base() { }
-        protected SerializableDictionary(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        {
-        }
+        public SerializableDictionary() : base(StringComparer.InvariantCultureIgnoreCase) { }
+       
         #region IXmlSerializable Members
         public XmlSchema GetSchema()
         {
@@ -46,7 +44,7 @@ namespace DD4T.ContentModel
                 reader.ReadStartElement("item");
 
                 reader.ReadStartElement("key");
-                TKey key = (TKey)keySerializer.Deserialize(reader);
+                string key = (string)keySerializer.Deserialize(reader);
                 reader.ReadEndElement();
 
                 reader.ReadStartElement("value");
@@ -67,7 +65,7 @@ namespace DD4T.ContentModel
             XmlSerializer keySerializer = new XmlSerializer(typeof(TKey));
             XmlSerializer valueSerializer = new XmlSerializer(typeof(TImplValue));
 
-            foreach (TKey key in this.Keys)
+            foreach (string key in this.Keys)
             {
                 writer.WriteStartElement("item");
 
