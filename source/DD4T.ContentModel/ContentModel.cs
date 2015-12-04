@@ -274,13 +274,6 @@ namespace DD4T.ContentModel
     [Serializable]
     public class FieldSet : SerializableDictionary<string, IField, Field>, IFieldSet, IXmlSerializable
     {
-        public FieldSet()
-            : base()
-        {
-        }
-
-        protected FieldSet(SerializationInfo info, StreamingContext context) : base(info, context) { }
-
     }
 
     public class Field : IField
