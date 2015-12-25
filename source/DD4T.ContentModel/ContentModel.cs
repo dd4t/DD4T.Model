@@ -668,6 +668,7 @@ namespace DD4T.ContentModel
             get;
             set;
         }
+        [Obsolete("Please use ViewModels and model any field you like as 'AltText'")]
         public string AltText
         {
             get;
