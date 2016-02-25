@@ -48,6 +48,7 @@
     <Compile Include="..\Solution Items\AssemblyInfo.cs">
       <Link>Properties\AssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="BinaryMeta.cs" />
     <Compile Include="ContentModel.cs" />
     <Compile Include="Exceptions\FieldHasNoValueException.cs" />
     <Compile Include="Exceptions\FieldTypeNotDefinedException.cs" />
