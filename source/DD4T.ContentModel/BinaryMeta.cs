@@ -5,7 +5,6 @@ using System.Text;
 
 namespace DD4T.ContentModel
 {
-    [Serializable]
     public class BinaryMeta : IBinaryMeta
     {
         public string VariantId { get; set; }
