@@ -8,6 +8,7 @@ using System.Xml;
 using System.Xml.Serialization;
 using Microsoft.Xml.Serialization.GeneratedAssembly;
 using System.Text.RegularExpressions;
+using DD4T.ContentModel.Contracts;
 using DD4T.ContentModel.Contracts.Serializing;
 
 namespace DD4T.Serialization

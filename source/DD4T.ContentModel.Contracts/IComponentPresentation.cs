@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace DD4T.ContentModel
+namespace DD4T.ContentModel.Contracts
 {
     public interface IComponentPresentation : IModel
     {
@@ -11,5 +11,6 @@ namespace DD4T.ContentModel
         string RenderedContent { get; }
         int OrderOnPage { get; set; }
         IList<ICondition> Conditions { get; } 
+        IList<string> Expressions { get; } 
     }
 }
