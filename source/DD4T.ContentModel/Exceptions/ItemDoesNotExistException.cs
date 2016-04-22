@@ -2,8 +2,7 @@
 {
     using System;
 
-    [Serializable]
-    public class ItemDoesNotExistException : ApplicationException
+    public class ItemDoesNotExistException : Exception
     {
     }
 }

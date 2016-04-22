@@ -1,16 +1,13 @@
 ﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using DD4T.ContentModel;
 using DD4T.Serialization;
 using DD4T.ContentModel.Contracts.Serializing;
-using System.Timers;
+using Xunit;
 using System.Diagnostics;
-using System.Linq;
-using System.Runtime.Remoting.Channels;
 
 namespace DD4T.Model.Test
 {
-    [TestClass]
+
     public class JsonSerialization : BaseSerialization
     {
         private static int loop = 100;
@@ -23,8 +20,22 @@ namespace DD4T.Model.Test
         private static string testComponentPresentationJson = null;
         private static string testComponentPresentationJsonCompressed = null;
 
-        [ClassInitialize]
-        public static void SetupTest(TestContext context)
+
+        //public static void SetupTest(TestContext context)
+        //{
+        //    testComponent = GenerateTestComponent();
+        //    testComponentPresentation = GenerateTestComponentPresentation();
+
+        //    // Method GetService() is a (virtual) instance method now, so we need a temp instance.
+        //    JsonSerialization testInstance = new JsonSerialization();
+
+        //    testComponentJson = testInstance.GetService(false).Serialize<IComponent>(testComponent);
+        //    testComponentJsonCompressed = testInstance.GetService(true).Serialize<IComponent>(testComponent);
+        //    testComponentPresentationJson = testInstance.GetService(false).Serialize<IComponentPresentation>(testComponentPresentation);
+        //    testComponentPresentationJsonCompressed = testInstance.GetService(true).Serialize<IComponentPresentation>(testComponentPresentation);
+        //}
+
+        static JsonSerialization()
         {
             testComponent = GenerateTestComponent();
             testComponentPresentation = GenerateTestComponentPresentation();
@@ -38,94 +49,94 @@ namespace DD4T.Model.Test
             testComponentPresentationJsonCompressed = testInstance.GetService(true).Serialize<IComponentPresentation>(testComponentPresentation);
         }
 
-
-        [TestMethod]
+        [Fact]
         public void SerializeComponentJson()
         {
+
             SerializeJson<Component>(false);
         }
 
-        [TestMethod]
+        [Fact]
         public void DeserializeComponentJson()
         {
             DeserializeJson<Component>(false);
         }
 
-        [TestMethod]
+        [Fact]
         public void DeserializeComponentAutodetectedJson()
         {
             DeserializeAutodetectedJson<Component>(false);
         }
 
-        [TestMethod]
+        [Fact]
         public void SerializeAndCompressComponentJson()
         {
             SerializeJson<Component>(true);
         }
 
-        [TestMethod]
+        [Fact]
         public void DeserializeAndDecompressComponentJson()
         {
             DeserializeJson<Component>(true);
         }
 
-        [TestMethod]
+        [Fact]
         public void DeserializeAndDecompressComponentAutodetectedJson()
         {
             DeserializeAutodetectedJson<Component>(true);
         }
 
-        [TestMethod]
+        [Fact]
         public void SerializeComponentPresentationJson()
         {
             SerializeJson<ComponentPresentation>(false);
         }
 
-        [TestMethod]
+        [Fact]
         public void DeserializeComponentPresentationJson()
         {
             DeserializeJson<ComponentPresentation>(false);
         }
 
-        [TestMethod]
+        [Fact]
         public void DeserializeComponentPresentationAutodetectedJson()
         {
             DeserializeAutodetectedJson<ComponentPresentation>(false);
         }
 
-        [TestMethod]
+        [Fact]
         public void SerializeAndCompressComponentPresentationJson()
         {
             SerializeJson<ComponentPresentation>(true);
         }
 
-        [TestMethod]
+        [Fact]
         public void DeserializeAndDecompressComponentPresentationJson()
         {
             DeserializeJson<ComponentPresentation>(true);
         }
 
-        [TestMethod]
+        [Fact]
         public void DeserializeAndDecompressComponentPresentationAutodetectedJson()
         {
             DeserializeAutodetectedJson<ComponentPresentation>(true);
         }
 
-        [TestMethod]
+        [Fact]
         public void DeserializeComponentPresentationFromComponentJson()
         {
             ISerializerService service = GetService(false);
- 
+
             for (int i = 0; i < loop; i++)
             {
                 ComponentPresentation cp = service.Deserialize<ComponentPresentation>(GetTestString<Component>(false));
-                Assert.IsNotNull(cp);
-                Assert.IsTrue(cp.Component.Title == "Test - component.title");
+                Assert.NotNull(cp);
+                Assert.True(cp.Component.Title == "Test - component.title");
             }
-         }
+        }
 
-        
-        [TestMethod]
+
+        [Fact]
         public void DuplicateKeywordsIssue()
         {
             Component c = GetTestModel<Component>();
@@ -135,7 +146,7 @@ namespace DD4T.Model.Test
             Component c2 = service.Deserialize<Component>(s);
             string s2 = service.Serialize<Component>(c2);
             Component c3 = service.Deserialize<Component>(s2);
-            Assert.IsTrue(c3.Fields["test"].KeywordValues.Count == nrOfKeywords);
+            Assert.True(c3.Fields["test"].KeywordValues.Count == nrOfKeywords);
         }
 
 
@@ -171,12 +182,14 @@ namespace DD4T.Model.Test
             for (int i = 0; i < loop; i++)
             {
                 T model = GetTestModel<T>();
-                Assert.IsNotNull(model, "error retrieving test model");
+
+                //Assert.NotNull(model, "error retrieving test model");
+                Assert.NotNull(model);
                 string _serializedString = service.Serialize<T>(model);
-                Assert.IsNotNull(_serializedString);
+                Assert.NotNull(_serializedString);
                 if (!isCompressed)
                 {
-                    Assert.IsTrue(_serializedString.Contains("Test - component.title"));
+                    Assert.True(_serializedString.Contains("Test - component.title"));
                 }
             }
         }
@@ -191,14 +204,14 @@ namespace DD4T.Model.Test
             for (int i = 0; i < loop; i++)
             {
                 T c = service.Deserialize<T>(GetTestString<T>(isCompressed));
-                Assert.IsNotNull(c);
+                Assert.NotNull(c);
                 if (c is Component)
                 {
-                    Assert.IsTrue(((IComponent)c).Title == "Test - component.title");
+                    Assert.True(((IComponent)c).Title == "Test - component.title");
                 }
                 else if (c is ComponentPresentation)
                 {
-                    Assert.IsTrue(((IComponentPresentation)c).Component.Title == "Test - component.title");
+                    Assert.True(((IComponentPresentation)c).Component.Title == "Test - component.title");
                 }
 
             }
@@ -212,18 +225,19 @@ namespace DD4T.Model.Test
             stopwatch.Start();
             ISerializerService service = SerializerServiceFactory.FindSerializerServiceForContent(GetTestString<T>(isCompressed));
             System.Diagnostics.Trace.WriteLine(string.Format("[{0}] {1}", stopwatch.Elapsed, "detected service"));
-            Assert.IsInstanceOfType(service, typeof(JSONSerializerService), "Incorrect Service detected");
+            //Assert.InstanceOfType(service, typeof(JSONSerializerService), "Incorrect Service detected");
+            Assert.IsType<JSONSerializerService>(service);
             for (int i = 0; i < loop; i++)
             {
                 T c = service.Deserialize<T>(GetTestString<T>(isCompressed));
-                Assert.IsNotNull(c);
+                Assert.NotNull(c);
                 if (c is Component)
                 {
-                    Assert.IsTrue(((IComponent)c).Title == "Test - component.title");
+                    Assert.True(((IComponent)c).Title == "Test - component.title");
                 }
                 else if (c is ComponentPresentation)
                 {
-                    Assert.IsTrue(((IComponentPresentation)c).Component.Title == "Test - component.title");
+                    Assert.True(((IComponentPresentation)c).Component.Title == "Test - component.title");
                 }
             }
             System.Diagnostics.Trace.WriteLine(string.Format("[{0}] deserialized {1} objects of type {2}", stopwatch.Elapsed, loop, typeof(T).Name));

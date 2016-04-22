@@ -1,0 +1,20 @@
+{
+  "version": "2.1.0-*",
+  "description": "DD4T Serialization",
+  "authors": [ "Shibani" ],
+  "tags": [ "" ],
+  "projectUrl": "",
+  "licenseUrl": "",
+  "dependencies": {
+    "DD4T.ContentModel.Contracts": "" ,
+    "DD4T.ContentModel": "",
+    "Newtonsoft.Json": "8.0.3",
+    "System.IO.Compression": "4.1.0-beta-23516"
+  },
+  "frameworks": {
+    "net451": { },
+    "net452": { },
+    "net46": { },
+    "dotnet5.4": { }
+  }
+}

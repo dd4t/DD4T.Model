@@ -1,12 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Runtime.Serialization;
-using System.Security.Permissions;
-using System.Text.RegularExpressions;
-using System.Xml.Serialization;
 
 namespace DD4T.ContentModel
 {
@@ -40,20 +35,20 @@ namespace DD4T.ContentModel
         public DateTime LastPublishedDate { get; set; }
 
         public PageTemplate PageTemplate { get; set; }
-        [XmlIgnore]
+
         IPageTemplate IPage.PageTemplate
         {
             get { return PageTemplate; }
         }
 
         public Schema Schema { get; set; }
-        [XmlIgnore]
+
         ISchema IPage.Schema
         {
             get { return Schema; }
         }
         public FieldSet MetadataFields { get; set; }
-        [XmlIgnore]
+
         IFieldSet IPage.MetadataFields
         {
             get
@@ -62,20 +57,20 @@ namespace DD4T.ContentModel
             }
         }
         public List<ComponentPresentation> ComponentPresentations { get; set; }
-        [XmlIgnore]
+
         IList<IComponentPresentation> IPage.ComponentPresentations
         {
             get { return ComponentPresentations.ToList<IComponentPresentation>(); }
         }
 
         public OrganizationalItem StructureGroup { get; set; }
-        [XmlIgnore]
+
         IOrganizationalItem IPage.StructureGroup
         {
             get { return StructureGroup; }
         }
         public List<Category> Categories { get; set; }
-        [XmlIgnore]
+
         IList<ICategory> IPage.Categories
         {
             get { return Categories.ToList<ICategory>(); }
@@ -86,21 +81,21 @@ namespace DD4T.ContentModel
 
     public class Keyword : RepositoryLocalItem, IKeyword
     {
-        [XmlAttribute]
+
         public string Description { get; set; }
-        [XmlAttribute]
+
         public string Key { get; set; }
-        [XmlAttribute]
+
         public string TaxonomyId { get; set; }
-        [XmlAttribute]
+
         public string Path { get; set; }
         private List<IKeyword> parentKeywords = new List<IKeyword>();
-        [XmlIgnore]
+
         public IList<IKeyword> ParentKeywords { get { return parentKeywords; } }
 
 
         public FieldSet MetadataFields { get; set; }
-        [XmlIgnore]
+
         IFieldSet IKeyword.MetadataFields
         {
             get { return MetadataFields != null ? (MetadataFields as IFieldSet) : null; }
@@ -115,23 +110,23 @@ namespace DD4T.ContentModel
     public class Category : RepositoryLocalItem, ICategory
     {
         public List<Keyword> Keywords { get; set; }
-        [XmlIgnore]
+
         IList<IKeyword> ICategory.Keywords
         { get { return Keywords.ToList<IKeyword>(); } }
     }
 
     public class ComponentPresentation : Model, IComponentPresentation
     {
-        [XmlIgnore]
+
         public IPage Page { get; set; }
         public Component Component { get; set; }
-        [XmlIgnore]
+
         IComponent IComponentPresentation.Component
         {
             get { return Component as IComponent; }
         }
         public ComponentTemplate ComponentTemplate { get; set; }
-        [XmlIgnore]
+
         IComponentTemplate IComponentPresentation.ComponentTemplate
         {
             get { return ComponentTemplate as IComponentTemplate; }
@@ -139,12 +134,12 @@ namespace DD4T.ContentModel
         public string RenderedContent { get; set; }
         public bool IsDynamic { get; set; }
 
-        [XmlIgnore]
+
         public int OrderOnPage { get; set; }
 
         public List<Condition> Conditions { get; set; }
 
-        [XmlIgnore]
+
         IList<ICondition> IComponentPresentation.Conditions
         {
             get { return Conditions.ToList<ICondition>(); }
@@ -156,7 +151,7 @@ namespace DD4T.ContentModel
         public string FileExtension { get; set; }
         public DateTime RevisionDate { get; set; }
         public FieldSet MetadataFields { get; set; }
-        [XmlIgnore]
+
         IFieldSet ITemplate.MetadataFields
         {
             get
@@ -165,7 +160,7 @@ namespace DD4T.ContentModel
             }
         }
         public OrganizationalItem Folder { get; set; }
-        [XmlIgnore]
+
         IOrganizationalItem ITemplate.Folder
         {
             get { return Folder as IOrganizationalItem; }
@@ -177,7 +172,7 @@ namespace DD4T.ContentModel
         public string OutputFormat { get; set; }
         public DateTime RevisionDate { get; set; }
         public FieldSet MetadataFields { get; set; }
-        [XmlIgnore]
+
         IFieldSet ITemplate.MetadataFields
         {
             get
@@ -186,7 +181,7 @@ namespace DD4T.ContentModel
             }
         }
         public OrganizationalItem Folder { get; set; }
-        [XmlIgnore]
+
         IOrganizationalItem ITemplate.Folder
         {
             get { return Folder as IOrganizationalItem; }
@@ -200,39 +195,39 @@ namespace DD4T.ContentModel
         public DateTime LastPublishedDate { get; set; }
         public DateTime RevisionDate { get; set; }
         public Schema Schema { get; set; }
-        [XmlIgnore]
+
         ISchema IComponent.Schema
         {
             get { return Schema; }
         }
 
         public FieldSet Fields { get; set; }
-        [XmlIgnore]
+
         IFieldSet IComponent.Fields
         {
             get { return Fields != null ? (Fields as IFieldSet) : null; }
         }
         public FieldSet MetadataFields { get; set; }
-        [XmlIgnore]
+
         IFieldSet IComponent.MetadataFields
         {
             get { return MetadataFields != null ? (MetadataFields as IFieldSet) : null; }
         }
         public ComponentType ComponentType { get; set; }
         public Multimedia Multimedia { get; set; }
-        [XmlIgnore]
+
         IMultimedia IComponent.Multimedia
         {
             get { return Multimedia as IMultimedia; }
         }
         public OrganizationalItem Folder { get; set; }
-        [XmlIgnore]
+
         IOrganizationalItem IComponent.Folder
         {
             get { return Folder as IOrganizationalItem; }
         }
         public List<Category> Categories { get; set; }
-        [XmlIgnore]
+
         IList<ICategory> IComponent.Categories
         {
             get { return Categories.ToList<ICategory>(); } //as IList<ICategory>; 
@@ -257,7 +252,7 @@ namespace DD4T.ContentModel
     public class Schema : RepositoryLocalItem, ISchema
     {
         public OrganizationalItem Folder { get; set; }
-        [XmlIgnore]
+
         IOrganizationalItem ISchema.Folder
         {
             get { return Folder as IOrganizationalItem; }
@@ -271,9 +266,11 @@ namespace DD4T.ContentModel
     }
     public enum MergeAction { Replace, Merge, MergeMultiValueSkipSingleValue, MergeMultiValueReplaceSingleValue, Skip }
 
-    [Serializable]
-    public class FieldSet : SerializableDictionary<string, IField, Field>, IFieldSet, IXmlSerializable
+    public class FieldSet : Dictionary<string, IField>, IFieldSet // SerializableDictionary<string, IField, Field>, IFieldSet, IXmlSerializable
     {
+        public FieldSet() : base()
+        {
+        }
     }
 
     public class Field : IField
@@ -320,7 +317,7 @@ namespace DD4T.ContentModel
             get;
             set;
         }
-        [XmlIgnore]
+
         IList<string> IField.Values
         {
             get { return Values; }
@@ -330,7 +327,7 @@ namespace DD4T.ContentModel
             get;
             set;
         }
-        [XmlIgnore]
+
         IList<double> IField.NumericValues
         {
             get { return NumericValues; }
@@ -340,7 +337,7 @@ namespace DD4T.ContentModel
             get;
             set;
         }
-        [XmlIgnore]
+
         IList<DateTime> IField.DateTimeValues
         {
             get { return DateTimeValues; }
@@ -350,7 +347,7 @@ namespace DD4T.ContentModel
             get;
             set;
         }
-        [XmlIgnore]
+
         IList<IComponent> IField.LinkedComponentValues
         {
             get
@@ -363,7 +360,7 @@ namespace DD4T.ContentModel
             get;
             set;
         }
-        [XmlIgnore]
+
         IList<IFieldSet> IField.EmbeddedValues
         {
             get
@@ -378,7 +375,7 @@ namespace DD4T.ContentModel
             get;
             set;
         }
-        [XmlIgnore]
+
         ISchema IField.EmbeddedSchema
         {
             get
@@ -388,35 +385,35 @@ namespace DD4T.ContentModel
         }
 
 
-        [XmlAttribute]
+
         public FieldType FieldType
         {
             get;
             set;
         }
 
-        [XmlAttribute]
+
         public string CategoryName
         {
             get;
             set;
         }
 
-        [XmlAttribute]
+
         public string CategoryId
         {
             get;
             set;
         }
 
-        [XmlAttribute]
+
         public string XPath
         {
             get;
             set;
         }
 
-        [XmlIgnore]
+
         public List<Keyword> Keywords
         {
             get
@@ -435,7 +432,7 @@ namespace DD4T.ContentModel
             set;
         }
 
-        [XmlIgnore]
+
         IList<IKeyword> IField.Keywords
         {
             get
@@ -443,7 +440,7 @@ namespace DD4T.ContentModel
                 return (KeywordValues == null) ? null : KeywordValues.ToList<IKeyword>();
             }
         }
-        [XmlIgnore]
+
         IList<IKeyword> IField.KeywordValues
         {
             get
@@ -479,7 +476,7 @@ namespace DD4T.ContentModel
 
             if (value is IEnumerable && !(value is string))
             {
-                foreach (object item in (IEnumerable) value)
+                foreach (object item in (IEnumerable)value)
                 {
                     AddFieldValue(item);
                 }
@@ -508,7 +505,7 @@ namespace DD4T.ContentModel
                 {
                     DateTimeValues = new List<DateTime>();
                 }
-                DateTimeValues.Add((DateTime) value);
+                DateTimeValues.Add((DateTime)value);
                 FieldType = FieldType.Date;
             }
             else
@@ -526,9 +523,9 @@ namespace DD4T.ContentModel
 
     public abstract class Model : IModel
     {
-        public SerializableDictionary<string, IFieldSet, FieldSet> ExtensionData { get; set; }
+        public Dictionary<string, IFieldSet> ExtensionData { get; set; }
 
-        [XmlIgnore]
+
         IDictionary<string, IFieldSet> IModel.ExtensionData
         {
             get { return ExtensionData; }
@@ -544,7 +541,7 @@ namespace DD4T.ContentModel
 
             if (ExtensionData == null)
             {
-                ExtensionData = new SerializableDictionary<string, IFieldSet, FieldSet>();
+                ExtensionData = new Dictionary<string, IFieldSet>();
             }
 
             IFieldSet sectionFieldSet;
@@ -565,7 +562,7 @@ namespace DD4T.ContentModel
                 ((Field)propertyField).AddFieldValue(value);
             }
         }
-   }
+    }
 
 
     public abstract class TridionItem : Model, IItem
@@ -577,13 +574,13 @@ namespace DD4T.ContentModel
     {
         public string PublicationId { get; set; }
         public Publication Publication { get; set; }
-        [XmlIgnore]
+
         IPublication IRepositoryLocal.Publication
         {
             get { return Publication; }
         }
         public Publication OwningPublication { get; set; }
-        [XmlIgnore]
+
         IPublication IRepositoryLocal.OwningPublication
         {
             get { return OwningPublication; }
@@ -598,63 +595,63 @@ namespace DD4T.ContentModel
     {
     }
 
-    public class TcmUri
-    {
-        public int ItemId { get; set; }
-        public int PublicationId { get; set; }
-        public int ItemTypeId { get; set; }
-        public int Version { get; set; }
+    //public class TcmUri
+    //{
+    //    public int ItemId { get; set; }
+    //    public int PublicationId { get; set; }
+    //    public int ItemTypeId { get; set; }
+    //    public int Version { get; set; }
 
-        [DebuggerStepThrough]
-        public TcmUri(string Uri)
-        {
-            Regex re = new Regex(@"tcm:(\d+)-(\d+)-?(\d*)-?v?(\d*)");
-            Match m = re.Match(Uri);
-            if (m.Success)
-            {
-                PublicationId = Convert.ToInt32(m.Groups[1].Value);
-                ItemId = Convert.ToInt32(m.Groups[2].Value);
-                if (m.Groups.Count > 3 && !string.IsNullOrEmpty(m.Groups[3].Value))
-                {
-                    ItemTypeId = Convert.ToInt32(m.Groups[3].Value);
-                }
-                else
-                {
-                    ItemTypeId = 16;
-                }
-                if (m.Groups.Count > 4 && !string.IsNullOrEmpty(m.Groups[4].Value))
-                {
-                    Version = Convert.ToInt32(m.Groups[4].Value);
-                }
-                else
-                {
-                    Version = 0;
-                }
-            }
-        }
-        public TcmUri(int PublicationId, int ItemId, int ItemTypeId, int Version)
-        {
-            this.PublicationId = PublicationId;
-            this.ItemId = ItemId;
-            this.ItemTypeId = ItemTypeId;
-            this.Version = Version;
-        }
-        public override string ToString()
-        {
-            if (this.ItemTypeId == 16)
-            {
-                return string.Format("tcm:{0}-{1}", this.PublicationId, this.ItemId);
-            }
-            return string.Format("tcm:{0}-{1}-{2}", this.PublicationId, this.ItemId, this.ItemTypeId);
-        }
-        public static TcmUri NullUri
-        {
-            get
-            {
-                return new TcmUri(0, 0, 0, 0);
-            }
-        }
-    }
+    //    [DebuggerStepThrough]
+    //    public TcmUri(string Uri)
+    //    {
+    //        Regex re = new Regex(@"tcm:(\d+)-(\d+)-?(\d*)-?v?(\d*)");
+    //        Match m = re.Match(Uri);
+    //        if (m.Success)
+    //        {
+    //            PublicationId = Convert.ToInt32(m.Groups[1].Value);
+    //            ItemId = Convert.ToInt32(m.Groups[2].Value);
+    //            if (m.Groups.Count > 3 && !string.IsNullOrEmpty(m.Groups[3].Value))
+    //            {
+    //                ItemTypeId = Convert.ToInt32(m.Groups[3].Value);
+    //            }
+    //            else
+    //            {
+    //                ItemTypeId = 16;
+    //            }
+    //            if (m.Groups.Count > 4 && !string.IsNullOrEmpty(m.Groups[4].Value))
+    //            {
+    //                Version = Convert.ToInt32(m.Groups[4].Value);
+    //            }
+    //            else
+    //            {
+    //                Version = 0;
+    //            }
+    //        }
+    //    }
+    //    public TcmUri(int PublicationId, int ItemId, int ItemTypeId, int Version)
+    //    {
+    //        this.PublicationId = PublicationId;
+    //        this.ItemId = ItemId;
+    //        this.ItemTypeId = ItemTypeId;
+    //        this.Version = Version;
+    //    }
+    //    public override string ToString()
+    //    {
+    //        if (this.ItemTypeId == 16)
+    //        {
+    //            return string.Format("tcm:{0}-{1}", this.PublicationId, this.ItemId);
+    //        }
+    //        return string.Format("tcm:{0}-{1}-{2}", this.PublicationId, this.ItemId, this.ItemTypeId);
+    //    }
+    //    public static TcmUri NullUri
+    //    {
+    //        get
+    //        {
+    //            return new TcmUri(0, 0, 0, 0);
+    //        }
+    //    }
+    //}
 
     public class Multimedia : IMultimedia
     {
@@ -716,7 +713,7 @@ namespace DD4T.ContentModel
 
         public List<Condition> Conditions { get; set; }
 
-        [XmlIgnore]
+
         IList<ICondition> ITargetGroup.Conditions { get { return Conditions.ToList<ICondition>(); } }
     }
 

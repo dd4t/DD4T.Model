@@ -1,9 +1,9 @@
 ﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using DD4T.ContentModel;
 using DD4T.ContentModel.Contracts.Serializing;
 using System.Collections.Generic;
 using System.Linq;
+using Xunit;
 
 namespace DD4T.Model.Test
 {
@@ -141,7 +141,7 @@ namespace DD4T.Model.Test
             modelImpl.AddExtensionProperty("test2", "testProperty2a", new DateTime(1970, 12, 16));
             modelImpl.AddExtensionProperty("test3", "dummyProperty", null); // This should not do anything
 
-            Assert.IsFalse(modelImpl.ExtensionData.ContainsKey("test3"), "Adding a null value should not do anything.");
+            Assert.False(modelImpl.ExtensionData.ContainsKey("test3"), "Adding a null value should not do anything.");
         }
 
         protected abstract ISerializerService GetService(bool compressionEnabled);
@@ -152,11 +152,13 @@ namespace DD4T.Model.Test
             ISerializerService serializer = GetService(compressionEnabled: false);
 
             string serializedData = serializer.Serialize(inputModel);
-            Assert.IsNotNull(serializedData, "Serialized data");
-            Console.WriteLine(serializedData);
+            //Assert.NotNull(serializedData, "Serialized data");
+            Assert.NotNull(serializedData);
+            //Console.WriteLine(serializedData);
 
             T deserializedModel = serializer.Deserialize<T>(serializedData);
-            Assert.IsNotNull(deserializedModel, "Deserialized Model");
+            //Assert.NotNull(deserializedModel, "Deserialized Model");
+            Assert.NotNull(deserializedModel);
 
             return deserializedModel;
         }
@@ -164,39 +166,45 @@ namespace DD4T.Model.Test
 
         protected void AssertEqualFieldSets(IFieldSet expected, IFieldSet actual)
         {
-            Assert.IsTrue(actual.Keys.SequenceEqual(expected.Keys), "FieldSets have different Keys.");
+            Assert.True(actual.Keys.SequenceEqual(expected.Keys), "FieldSets have different Keys.");
 
             foreach (IField field in expected.Values)
             {
                 IField deserializedField = actual[field.Name];
-                Assert.AreEqual(field.FieldType, deserializedField.FieldType, "FieldType");
+                Assert.Equal(field.FieldType, deserializedField.FieldType);
+                //Assert.AreEqual(field.FieldType, deserializedField.FieldType, "FieldType");
                 switch (field.FieldType)
                 {
                     case FieldType.Number:
-                        Assert.IsNotNull(deserializedField.NumericValues, "NumericValues");
-                        Assert.IsTrue(deserializedField.NumericValues.SequenceEqual(field.NumericValues), "NumericValues");
+                        //Assert.NotNull(deserializedField.NumericValues, "NumericValues");
+                        Assert.NotNull(deserializedField.NumericValues);
+                        Assert.True(deserializedField.NumericValues.SequenceEqual(field.NumericValues), "NumericValues");
                         break;
 
                     case FieldType.Date:
-                        Assert.IsNotNull(deserializedField.DateTimeValues, "DateTimeValues");
-                        Assert.IsTrue(deserializedField.DateTimeValues.SequenceEqual(field.DateTimeValues), "DateTimeValues");
+                        //Assert.NotNull(deserializedField.DateTimeValues, "DateTimeValues");
+                        Assert.NotNull(deserializedField.DateTimeValues);
+                        Assert.True(deserializedField.DateTimeValues.SequenceEqual(field.DateTimeValues), "DateTimeValues");
                         break;
 
                     case FieldType.Embedded:
-                        Assert.IsNotNull(deserializedField.EmbeddedValues, "EmbeddedValues");
-                        Assert.AreEqual(deserializedField.EmbeddedValues.Count, field.EmbeddedValues.Count, "#EmbeddedValues");
+                        //Assert.NotNull(deserializedField.EmbeddedValues, "EmbeddedValues");
+                        Assert.NotNull(deserializedField.EmbeddedValues);
+                        //Assert.AreEqual(deserializedField.EmbeddedValues.Count, field.EmbeddedValues.Count, "EmbeddedValues");
+                        Assert.Equal(deserializedField.EmbeddedValues.Count, field.EmbeddedValues.Count);
                         break;
 
                     default:
-                        Assert.IsNotNull(deserializedField.Values, "Values");
-                        Assert.IsTrue(deserializedField.Values.SequenceEqual(field.Values), "Values");
+                        //Assert.NotNull(deserializedField.Values, "Values");
+                        Assert.NotNull(deserializedField.Values);
+                        Assert.True(deserializedField.Values.SequenceEqual(field.Values), "Values");
                         break;
                 }
             }
         }
 
 
-        [TestMethod]
+        [Fact]
         public void SerializeDeserializeComponentWithExtensionData()
         {
             IComponent testComponent = GenerateTestComponent();
@@ -204,9 +212,11 @@ namespace DD4T.Model.Test
 
             IComponent deserializedComponent = SerializeDeserializeModel<Component>(testComponent);
 
-            Assert.IsNotNull(deserializedComponent.ExtensionData, "ExtensionData");
-            Assert.AreEqual(testComponent.ExtensionData.Count, deserializedComponent.ExtensionData.Count, "#ExtensionData");
-            Assert.IsTrue(deserializedComponent.ExtensionData.Keys.SequenceEqual(testComponent.ExtensionData.Keys), "ExtensionData.Keys");
+            //Assert.NotNull(deserializedComponent.ExtensionData, "ExtensionData");
+            Assert.NotNull(deserializedComponent.ExtensionData);
+            //Assert.AreEqual(testComponent.ExtensionData.Count, deserializedComponent.ExtensionData.Count, "#ExtensionData");
+            Assert.Equal(testComponent.ExtensionData.Count, deserializedComponent.ExtensionData.Count);
+            Assert.True(deserializedComponent.ExtensionData.Keys.SequenceEqual(testComponent.ExtensionData.Keys), "ExtensionData.Keys");
 
             foreach (KeyValuePair<string, IFieldSet> extensionDataSection in testComponent.ExtensionData)
             {
@@ -215,7 +225,7 @@ namespace DD4T.Model.Test
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void SerializeDeserializeComponentWithEclId()
         {
             Component testComponent = (Component)GenerateTestComponent();
@@ -223,7 +233,8 @@ namespace DD4T.Model.Test
 
             IComponent deserializedComponent = SerializeDeserializeModel<Component>(testComponent);
 
-            Assert.AreEqual(testComponent.EclId, deserializedComponent.EclId);
+            //Assert.AreEqual(testComponent.EclId, deserializedComponent.EclId);
+            Assert.Equal(testComponent.EclId, deserializedComponent.EclId);
 
         }
 

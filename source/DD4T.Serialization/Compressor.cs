@@ -13,6 +13,7 @@ namespace DD4T.Serialization
             using (var msi = new MemoryStream(bytes))
             using (var mso = new MemoryStream())
             {
+
                 using (var gs = new GZipStream(mso, CompressionMode.Compress))
                 {
                     msi.CopyTo(gs);
@@ -32,8 +33,14 @@ namespace DD4T.Serialization
                 {
                     gs.CopyTo(mso);
                 }
-
+#if NET451 || NET452 || NET46
                 return Encoding.UTF8.GetString(mso.ToArray());
+#endif
+#if DOTNET5_4
+                return Encoding.UTF8.GetString(mso.ToArray(), 0, mso.ToArray().Length);
+#endif
+
+     
             }
         }
     }

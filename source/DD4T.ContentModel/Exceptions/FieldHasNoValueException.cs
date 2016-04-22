@@ -2,8 +2,7 @@
 {
     using System;
 
-    [Serializable]
-    public class FieldHasNoValueException : ApplicationException
+    public class FieldHasNoValueException : Exception
     {
     }
 }

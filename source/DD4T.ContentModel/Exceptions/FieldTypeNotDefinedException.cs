@@ -2,8 +2,7 @@
 {
     using System;
 
-    [Serializable]
-    public class FieldTypeNotDefinedException : ApplicationException
+    public class FieldTypeNotDefinedException : Exception
     {
     }
 }

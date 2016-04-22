@@ -1,0 +1,20 @@
+{
+  "version": "2.1.0-*",
+  "description": "DD4T Model Contracts",
+  "authors": [ "Shibani" ],
+  "tags": [ "" ],
+  "projectUrl": "",
+  "licenseUrl": "",
+  "dependencies": {
+  },
+  "frameworks": {
+    "net451": { },
+    "net452": { },
+    "net46": { },
+    "dotnet5.4": {
+      "dependencies": {
+        "System.IO": "4.0.0"
+      }
+    }
+  }
+}
