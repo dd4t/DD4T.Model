@@ -2,19 +2,22 @@
   "version": "2.1.0-*",
   "description": "DD4T Model Contracts",
   "authors": [ "Shibani" ],
-  "tags": [ "" ],
-  "projectUrl": "",
-  "licenseUrl": "",
+
+  "packoptions": {
+    "tags": [ "" ],
+    "projectUrl": "",
+    "licenseUrl": "",
+  },
   "dependencies": {
+    "Microsoft.NETCore.App": {
+      "version": "1.0.0-rc2-3002702"
+    }
+  },
+  "runtimes": {
+    "win10-x64": {},
+    "osx.10.11-x64": {}
   },
   "frameworks": {
-    "net451": { },
-    "net452": { },
-    "net46": { },
-    "dotnet5.4": {
-      "dependencies": {
-        "System.IO": "4.0.0"
-      }
-    }
+    "netstandard1.5": { }
   }
 }
