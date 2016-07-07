@@ -39,10 +39,9 @@
   <ItemGroup>
     <Reference Include="DD4T.ContentModel.XmlSerializers">
       <HintPath>..\..\build\bin\DD4T.ContentModel.XmlSerializers.dll</HintPath>
-      <Private>True</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\net40\Newtonsoft.Json.dll</HintPath>
       <Private>False</Private>
     </Reference>
@@ -99,7 +98,7 @@
   <Import Project="..\..\DD4T Model.Targets" />
   <Target Name="AfterBuild">
     <CallTarget Targets="Package" />
-    <Message Text="Installing package to local NuGet repo" Importance="high" Condition="'$(NUGET_LOCALREPO)' != ''"/>
-    <CallTarget Targets="Install" Condition="'$(NUGET_LOCALREPO)' != ''"/>
+    <Message Text="Installing package to local NuGet repo" Importance="high" Condition="'$(NUGET_LOCALREPO)' != ''" />
+    <CallTarget Targets="Install" Condition="'$(NUGET_LOCALREPO)' != ''" />
   </Target>
 </Project>

@@ -48,6 +48,7 @@
     <Compile Include="..\Solution Items\AssemblyInfo.cs">
       <Link>Properties\AssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="IBinaryMeta.cs" />
     <Compile Include="ICondition.cs" />
     <Compile Include="IModel.cs" />
     <Compile Include="IItem.cs" />
