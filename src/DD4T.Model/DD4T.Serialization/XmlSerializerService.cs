@@ -15,9 +15,9 @@
 //    public class XmlSerializerService : BaseSerializerService
 //    {
 //        private static Dictionary<Type, XmlSerializer> _xmlSerializers = new Dictionary<Type, XmlSerializer>();
-//        private XmlSerializer GetXmlSerializer<T>() where T: XmlSerializer
+//        private XmlSerializer GetXmlSerializer<T>() where T : XmlSerializer
 //        {
-//            if (! _xmlSerializers.ContainsKey(typeof(T)))
+//            if (!_xmlSerializers.ContainsKey(typeof(T)))
 //            {
 //                XmlSerializer serializer = (T)Activator.CreateInstance(typeof(T));
 //                _xmlSerializers.Add(typeof(T), serializer);
@@ -36,7 +36,7 @@
 
 //            //Add an empty namespace and empty value
 //            ns.Add("", "");
-                       
+
 //            serializer.Serialize(writer, o, ns);
 //            outputValue = Encoding.UTF8.GetString(ms.ToArray());
 
@@ -47,8 +47,7 @@
 //            return outputValue;
 //        }
 
-
-//        public override string Serialize<T>(T input) 
+//        public override string Serialize<T>(T input)
 //        {
 //            string result;
 //            if (input is Page || input is IPage)
@@ -70,14 +69,13 @@
 //            return ((SerializationProperties)SerializationProperties).CompressionEnabled ? Compressor.Compress(result) : result;
 //        }
 
-//        public override T Deserialize<T>(string input) 
+//        public override T Deserialize<T>(string input)
 //        {
 //            // NOTE: important exception situation!!
-//            // if the requested type is IComponentPresentation, there is a possiblity that the data 
-//            // provided to us actually contains a Component instead. In that case we need to add a 
+//            // if the requested type is IComponentPresentation, there is a possiblity that the data
+//            // provided to us actually contains a Component instead. In that case we need to add a
 //            // dummy CT / CP around the Component and return that!
 
-            
 //            if (((SerializationProperties)SerializationProperties).CompressionEnabled)
 //            {
 //                input = Compressor.Decompress(input);
@@ -102,7 +100,7 @@
 //                {
 //                    // handle the exception situation where we are asked to deserialize into a CP but the data is actually a Component
 //                    serializer = GetXmlSerializer<ComponentSerializer>();
-//                    Component component = (Component) serializer.Deserialize(tr);
+//                    Component component = (Component)serializer.Deserialize(tr);
 //                    IComponentPresentation componentPresentation = new ComponentPresentation()
 //                    {
 //                        Component = component,
@@ -114,7 +112,6 @@
 //            }
 //            return (T)serializer.Deserialize(tr);
 //        }
-
 
 //        public override bool IsAvailable()
 //        {
