@@ -142,12 +142,34 @@ namespace DD4T.ContentModel
         [XmlIgnore]
         public int OrderOnPage { get; set; }
 
-        public List<Condition> Conditions { get; set; }
+        [Obsolete("Conditions is deprecated, please refactor your code to work with TargetGroup.Conditions from items within the TargetGroupConditions property")]
+        public List<Condition> Conditions
+        {
+            get
+            {
+                if (TargetGroupConditions!=null)
+                {
+                    //This is for backwards compatibility where for some reason the conditions of the target groups were pulled out and put
+                    //On the ComponentPresentation model (skipping out the top level of target group definition; ie the target group and its inclusion/exclusion for the CP)
+                    return TargetGroupConditions.Select(t => t.TargetGroup.Conditions).SelectMany(x => x).ToList();
+                }
+                return null;
+            }
+        }
+
+        public List<TargetGroupCondition> TargetGroupConditions { get; set; }
 
         [XmlIgnore]
+        [Obsolete("Conditions is deprecated, please refactor your code to work with TargetGroup.Conditions from items within the TargetGroupConditions property")]
         IList<ICondition> IComponentPresentation.Conditions
         {
-            get { return Conditions.ToList<ICondition>(); }
+            get { return TargetGroupConditions.Select(t => t.TargetGroup.Conditions).SelectMany(x => x).ToList<ICondition>(); }
+        }
+
+        [XmlIgnore]
+        IList<ITargetGroupCondition> IComponentPresentation.TargetGroupConditions
+        {
+            get { return TargetGroupConditions.ToList<ITargetGroupCondition>(); }
         }
     }
 
@@ -739,8 +761,16 @@ namespace DD4T.ContentModel
         public object Value { get; set; }
     }
 
-    public class TargetGroupCondition : Condition
+    public class TargetGroupCondition : Condition, ITargetGroupCondition
     {
         public TargetGroup TargetGroup { get; set; }
+        [XmlIgnore]
+        ITargetGroup ITargetGroupCondition.TargetGroup
+        {
+            get
+            {
+                return TargetGroup as ITargetGroup;
+            }
+        }
     }
 }
