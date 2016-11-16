@@ -70,6 +70,7 @@
     <Compile Include="IPublication.cs" />
     <Compile Include="IRepositoryLocal.cs" />
     <Compile Include="ISchema.cs" />
+    <Compile Include="ITargetGroupCondition.cs" />
     <Compile Include="ITemplate.cs" />
     <Compile Include="IViewable.cs" />
     <Compile Include="Properties\SpecificAssemblyInfo.cs" />
