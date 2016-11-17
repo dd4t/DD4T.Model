@@ -155,6 +155,13 @@ namespace DD4T.ContentModel
                 }
                 return null;
             }
+            set
+            {
+                if (value!=null)
+                {
+                    throw new Exception("Cannot set conditions directly - set these via TargetGroupConditions property");
+                }
+            }
         }
 
         public List<TargetGroupCondition> TargetGroupConditions { get; set; }
