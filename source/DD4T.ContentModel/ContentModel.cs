@@ -163,13 +163,13 @@ namespace DD4T.ContentModel
         [Obsolete("Conditions is deprecated, please refactor your code to work with TargetGroup.Conditions from items within the TargetGroupConditions property")]
         IList<ICondition> IComponentPresentation.Conditions
         {
-            get { return TargetGroupConditions.Select(t => t.TargetGroup.Conditions).SelectMany(x => x).ToList<ICondition>(); }
+            get { return TargetGroupConditions==null ? null : TargetGroupConditions.Select(t => t.TargetGroup.Conditions).SelectMany(x => x).ToList<ICondition>(); }
         }
 
         [XmlIgnore]
         IList<ITargetGroupCondition> IComponentPresentation.TargetGroupConditions
         {
-            get { return TargetGroupConditions.ToList<ITargetGroupCondition>(); }
+            get { return TargetGroupConditions==null ? null : TargetGroupConditions.ToList<ITargetGroupCondition>(); }
         }
     }
 
