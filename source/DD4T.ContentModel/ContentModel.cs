@@ -151,15 +151,22 @@ namespace DD4T.ContentModel
                 {
                     //This is for backwards compatibility where for some reason the conditions of the target groups were pulled out and put
                     //On the ComponentPresentation model (skipping out the top level of target group definition; ie the target group and its inclusion/exclusion for the CP)
-                    return TargetGroupConditions.Select(t => t.TargetGroup.Conditions).SelectMany(x => x).ToList();
+                    var conditions = TargetGroupConditions.Select(t => t.TargetGroup.Conditions).SelectMany(x => x).ToList();
+                    return conditions.Count > 0 ? conditions : null;
                 }
                 return null;
             }
             set
             {
-                if (value!=null)
+                if (value != null && value.Count > 0 && this.TargetGroupConditions != null)
                 {
-                    throw new Exception("Cannot set conditions directly - set these via TargetGroupConditions property");
+                    //For backwards compatibility on content published before TargetGroupConditions was introduced
+                    //We need to 'fake' a TargetGroupCondition with the given conditions
+                    TargetGroup dummyTargetGroup = new TargetGroup();
+                    dummyTargetGroup.Conditions = value;
+                    dummyTargetGroup.Title = "Please republish page to update with actual Target Group data";
+                    TargetGroupCondition condition = new TargetGroupCondition() { TargetGroup = dummyTargetGroup };
+                    this.TargetGroupConditions = new List<TargetGroupCondition> { condition };
                 }
             }
         }
