@@ -190,7 +190,7 @@ namespace DD4T.ContentModel
             }
             set
             {
-                if (value != null && value.Count > 0 && this.TargetGroupConditions != null)
+                if (value != null && value.Count > 0)
                 {
                     //For backwards compatibility on content published before TargetGroupConditions was introduced
                     //We need to 'fake' a TargetGroupCondition with the given conditions
