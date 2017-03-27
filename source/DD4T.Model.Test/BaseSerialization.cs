@@ -127,8 +127,14 @@ namespace DD4T.Model.Test
                 Value = "ID"
             }
                 );
+            var targetGroupConditions = new List<TargetGroupCondition>();
+            targetGroupConditions.Add(new TargetGroupCondition()
+            {
+                TargetGroup = new TargetGroup() { Title = "CustomersOnly", Conditions = conditions, Description = "A test target group", Id = "tcm:2-1231-256", PublicationId = "tcm:0-2-1" },
+                Negate = false
+            });
             ComponentPresentation cp = (ComponentPresentation) GenerateTestComponentPresentation();
-            cp.Conditions = conditions;
+            cp.TargetGroupConditions = targetGroupConditions;
             p.ComponentPresentations.Add(cp);
             return p;
         }
