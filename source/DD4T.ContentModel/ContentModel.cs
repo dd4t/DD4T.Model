@@ -40,6 +40,7 @@ namespace DD4T.ContentModel
         public DateTime LastPublishedDate { get; set; }
 
         public PageTemplate PageTemplate { get; set; }
+
         [XmlIgnore]
         IPageTemplate IPage.PageTemplate
         {
@@ -47,12 +48,15 @@ namespace DD4T.ContentModel
         }
 
         public Schema Schema { get; set; }
+
         [XmlIgnore]
         ISchema IPage.Schema
         {
             get { return Schema; }
         }
+
         public FieldSet MetadataFields { get; set; }
+
         [XmlIgnore]
         IFieldSet IPage.MetadataFields
         {
@@ -61,7 +65,9 @@ namespace DD4T.ContentModel
                 return MetadataFields != null ? MetadataFields as IFieldSet : null;
             }
         }
+
         public List<ComponentPresentation> ComponentPresentations { get; set; }
+
         [XmlIgnore]
         IList<IComponentPresentation> IPage.ComponentPresentations
         {
@@ -69,12 +75,15 @@ namespace DD4T.ContentModel
         }
 
         public OrganizationalItem StructureGroup { get; set; }
+
         [XmlIgnore]
         IOrganizationalItem IPage.StructureGroup
         {
             get { return StructureGroup; }
         }
+
         public List<Category> Categories { get; set; }
+
         [XmlIgnore]
         IList<ICategory> IPage.Categories
         {
@@ -87,34 +96,52 @@ namespace DD4T.ContentModel
     public class Keyword : RepositoryLocalItem, IKeyword
     {
         [XmlAttribute]
+        public bool IsRoot { get; set; }
+
+        [XmlAttribute]
+        public bool IsAbstract { get; set; }
+
+        [XmlAttribute]
         public string Description { get; set; }
+
         [XmlAttribute]
         public string Key { get; set; }
+
         [XmlAttribute]
         public string TaxonomyId { get; set; }
+
         [XmlAttribute]
         public string Path { get; set; }
-        private List<IKeyword> parentKeywords = new List<IKeyword>();
-        [XmlIgnore]
-        public IList<IKeyword> ParentKeywords { get { return parentKeywords; } }
 
+        [XmlIgnore]
+        public IList<IKeyword> RelatedKeywords { get; set; }
+
+        [XmlIgnore]
+        public IList<IKeyword> ParentKeywords { get; set; }
 
         public FieldSet MetadataFields { get; set; }
+
         [XmlIgnore]
         IFieldSet IKeyword.MetadataFields
         {
             get { return MetadataFields != null ? (MetadataFields as IFieldSet) : null; }
         }
 
+        [XmlIgnore]
+        public ISchema MetadataSchema { get; set; }
+
         public Keyword()
         {
             this.MetadataFields = new FieldSet();
+            this.ParentKeywords = new List<IKeyword>();
+            this.RelatedKeywords = new List<IKeyword>();
         }
     }
 
     public class Category : RepositoryLocalItem, ICategory
     {
         public List<Keyword> Keywords { get; set; }
+
         [XmlIgnore]
         IList<IKeyword> ICategory.Keywords
         { get { return Keywords.ToList<IKeyword>(); } }
@@ -124,18 +151,23 @@ namespace DD4T.ContentModel
     {
         [XmlIgnore]
         public IPage Page { get; set; }
+
         public Component Component { get; set; }
+
         [XmlIgnore]
         IComponent IComponentPresentation.Component
         {
             get { return Component as IComponent; }
         }
+
         public ComponentTemplate ComponentTemplate { get; set; }
+
         [XmlIgnore]
         IComponentTemplate IComponentPresentation.ComponentTemplate
         {
             get { return ComponentTemplate as IComponentTemplate; }
         }
+
         public string RenderedContent { get; set; }
         public bool IsDynamic { get; set; }
 
@@ -192,6 +224,7 @@ namespace DD4T.ContentModel
         public string FileExtension { get; set; }
         public DateTime RevisionDate { get; set; }
         public FieldSet MetadataFields { get; set; }
+
         [XmlIgnore]
         IFieldSet ITemplate.MetadataFields
         {
@@ -200,7 +233,9 @@ namespace DD4T.ContentModel
                 return MetadataFields != null ? MetadataFields as IFieldSet : null;
             }
         }
+
         public OrganizationalItem Folder { get; set; }
+
         [XmlIgnore]
         IOrganizationalItem ITemplate.Folder
         {
@@ -213,6 +248,7 @@ namespace DD4T.ContentModel
         public string OutputFormat { get; set; }
         public DateTime RevisionDate { get; set; }
         public FieldSet MetadataFields { get; set; }
+
         [XmlIgnore]
         IFieldSet ITemplate.MetadataFields
         {
@@ -221,7 +257,9 @@ namespace DD4T.ContentModel
                 return MetadataFields != null ? MetadataFields as IFieldSet : null;
             }
         }
+
         public OrganizationalItem Folder { get; set; }
+
         [XmlIgnore]
         IOrganizationalItem ITemplate.Folder
         {
@@ -231,11 +269,12 @@ namespace DD4T.ContentModel
 
     public class Component : RepositoryLocalItem, IComponent
     {
-
         #region Properties
+
         public DateTime LastPublishedDate { get; set; }
         public DateTime RevisionDate { get; set; }
         public Schema Schema { get; set; }
+
         [XmlIgnore]
         ISchema IComponent.Schema
         {
@@ -243,35 +282,44 @@ namespace DD4T.ContentModel
         }
 
         public FieldSet Fields { get; set; }
+
         [XmlIgnore]
         IFieldSet IComponent.Fields
         {
             get { return Fields != null ? (Fields as IFieldSet) : null; }
         }
+
         public FieldSet MetadataFields { get; set; }
+
         [XmlIgnore]
         IFieldSet IComponent.MetadataFields
         {
             get { return MetadataFields != null ? (MetadataFields as IFieldSet) : null; }
         }
+
         public ComponentType ComponentType { get; set; }
         public Multimedia Multimedia { get; set; }
+
         [XmlIgnore]
         IMultimedia IComponent.Multimedia
         {
             get { return Multimedia as IMultimedia; }
         }
+
         public OrganizationalItem Folder { get; set; }
+
         [XmlIgnore]
         IOrganizationalItem IComponent.Folder
         {
             get { return Folder as IOrganizationalItem; }
         }
+
         public List<Category> Categories { get; set; }
+
         [XmlIgnore]
         IList<ICategory> IComponent.Categories
         {
-            get { return Categories.ToList<ICategory>(); } //as IList<ICategory>; 
+            get { return Categories.ToList<ICategory>(); } //as IList<ICategory>;
         }
 
         public int Version { get; set; }
@@ -281,6 +329,7 @@ namespace DD4T.ContentModel
         #endregion Properties
 
         #region constructors
+
         public Component()
         {
             this.Categories = new List<Category>();
@@ -288,11 +337,14 @@ namespace DD4T.ContentModel
             this.Fields = new FieldSet();
             this.MetadataFields = new FieldSet();
         }
+
         #endregion constructors
     }
+
     public class Schema : RepositoryLocalItem, ISchema
     {
         public OrganizationalItem Folder { get; set; }
+
         [XmlIgnore]
         IOrganizationalItem ISchema.Folder
         {
@@ -305,6 +357,7 @@ namespace DD4T.ContentModel
             set;
         }
     }
+
     public enum MergeAction { Replace, Merge, MergeMultiValueSkipSingleValue, MergeMultiValueReplaceSingleValue, Skip }
 
     [Serializable]
@@ -315,6 +368,7 @@ namespace DD4T.ContentModel
     public class Field : IField
     {
         #region JSON serialization control
+
         // NOTE: we're simply supressing some properties from JSON serialization here. Normally you would use the [JsonIgnore] attribute for that purpose.
         // However, we are using JSON.NET conditional serialization feature (ShouldSerializeXYZ) here to avoid a direct reference to JSON.NET.
 
@@ -333,15 +387,17 @@ namespace DD4T.ContentModel
         {
             return false;
         }
-        #endregion
 
+        #endregion JSON serialization control
 
         #region Properties
+
         public string Name
         {
             get;
             set;
         }
+
         public string Value
         {
             get
@@ -351,41 +407,49 @@ namespace DD4T.ContentModel
                 return this.Values[0];
             }
         }
+
         public List<string> Values
         {
             get;
             set;
         }
+
         [XmlIgnore]
         IList<string> IField.Values
         {
             get { return Values; }
         }
+
         public List<double> NumericValues
         {
             get;
             set;
         }
+
         [XmlIgnore]
         IList<double> IField.NumericValues
         {
             get { return NumericValues; }
         }
+
         public List<DateTime> DateTimeValues
         {
             get;
             set;
         }
+
         [XmlIgnore]
         IList<DateTime> IField.DateTimeValues
         {
             get { return DateTimeValues; }
         }
+
         public List<Component> LinkedComponentValues
         {
             get;
             set;
         }
+
         [XmlIgnore]
         IList<IComponent> IField.LinkedComponentValues
         {
@@ -394,11 +458,13 @@ namespace DD4T.ContentModel
                 return (LinkedComponentValues == null) ? null : LinkedComponentValues.ToList<IComponent>();
             }
         }
+
         public List<FieldSet> EmbeddedValues
         {
             get;
             set;
         }
+
         [XmlIgnore]
         IList<IFieldSet> IField.EmbeddedValues
         {
@@ -408,12 +474,12 @@ namespace DD4T.ContentModel
             }
         }
 
-
         public Schema EmbeddedSchema
         {
             get;
             set;
         }
+
         [XmlIgnore]
         ISchema IField.EmbeddedSchema
         {
@@ -422,7 +488,6 @@ namespace DD4T.ContentModel
                 return EmbeddedSchema;
             }
         }
-
 
         [XmlAttribute]
         public FieldType FieldType
@@ -479,6 +544,7 @@ namespace DD4T.ContentModel
                 return (KeywordValues == null) ? null : KeywordValues.ToList<IKeyword>();
             }
         }
+
         [XmlIgnore]
         IList<IKeyword> IField.KeywordValues
         {
@@ -489,7 +555,9 @@ namespace DD4T.ContentModel
         }
 
         #endregion Properties
+
         #region Constructors
+
         public Field()
         {
             this.Keywords = new List<Keyword>();
@@ -499,14 +567,13 @@ namespace DD4T.ContentModel
             this.LinkedComponentValues = new List<Component>();
         }
 
-
         /// <summary>
         /// Initializes a new <see cref="Field"/> instance with a given name and value.
         /// </summary>
         /// <param name="name">The name of the field.</param>
         /// <param name="value">The value. Will be mapped to <see cref="Values"/>, <see cref="NumericValues"/> or <see cref="DateTimeValues"/> depending on its type.</param>
         /// <remarks>
-        /// Used by <see cref="Model.AddExtensionProperty"/> implementation. 
+        /// Used by <see cref="Model.AddExtensionProperty"/> implementation.
         /// Note that this initializes only the necessary properties to keep the serialized data small.
         /// </remarks>
         internal Field(string name, object value)
@@ -515,7 +582,7 @@ namespace DD4T.ContentModel
 
             if (value is IEnumerable && !(value is string))
             {
-                foreach (object item in (IEnumerable) value)
+                foreach (object item in (IEnumerable)value)
                 {
                     AddFieldValue(item);
                 }
@@ -525,6 +592,7 @@ namespace DD4T.ContentModel
                 AddFieldValue(value);
             }
         }
+
         #endregion Constructors
 
         internal void AddFieldValue(object value)
@@ -544,7 +612,7 @@ namespace DD4T.ContentModel
                 {
                     DateTimeValues = new List<DateTime>();
                 }
-                DateTimeValues.Add((DateTime) value);
+                DateTimeValues.Add((DateTime)value);
                 FieldType = FieldType.Date;
             }
             else
@@ -558,7 +626,6 @@ namespace DD4T.ContentModel
             }
         }
     }
-
 
     public abstract class Model : IModel
     {
@@ -601,24 +668,27 @@ namespace DD4T.ContentModel
                 ((Field)propertyField).AddFieldValue(value);
             }
         }
-   }
-
+    }
 
     public abstract class TridionItem : Model, IItem
     {
         public string Id { get; set; }
         public string Title { get; set; }
     }
+
     public abstract class RepositoryLocalItem : TridionItem, IRepositoryLocal
     {
         public string PublicationId { get; set; }
         public Publication Publication { get; set; }
+
         [XmlIgnore]
         IPublication IRepositoryLocal.Publication
         {
             get { return Publication; }
         }
+
         public Publication OwningPublication { get; set; }
+
         [XmlIgnore]
         IPublication IRepositoryLocal.OwningPublication
         {
@@ -668,6 +738,7 @@ namespace DD4T.ContentModel
                 }
             }
         }
+
         public TcmUri(int PublicationId, int ItemId, int ItemTypeId, int Version)
         {
             this.PublicationId = PublicationId;
@@ -675,6 +746,7 @@ namespace DD4T.ContentModel
             this.ItemTypeId = ItemTypeId;
             this.Version = Version;
         }
+
         public override string ToString()
         {
             if (this.ItemTypeId == 16)
@@ -683,6 +755,7 @@ namespace DD4T.ContentModel
             }
             return string.Format("tcm:{0}-{1}-{2}", this.PublicationId, this.ItemId, this.ItemTypeId);
         }
+
         public static TcmUri NullUri
         {
             get
@@ -699,44 +772,50 @@ namespace DD4T.ContentModel
             get;
             set;
         }
+
         public string MimeType
         {
             get;
             set;
         }
+
         [Obsolete("Please use ViewModels and model any field you like as 'AltText'")]
         public string AltText
         {
             get;
             set;
         }
+
         public string FileName
         {
             get;
             set;
         }
+
         public string FileExtension
         {
             get;
             set;
         }
+
         public long Size
         {
             get;
             set;
         }
+
         public int Width
         {
             get;
             set;
         }
+
         public int Height
         {
             get;
             set;
         }
     }
-
 
     public class Binary : Component, IBinary
     {
