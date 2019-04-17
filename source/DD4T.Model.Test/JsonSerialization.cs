@@ -18,16 +18,21 @@ namespace DD4T.Model.Test
 
         private static IComponent testComponent = null;
         private static IComponentPresentation testComponentPresentation = null;
+        private static IPage testPage = null;
+
         private static string testComponentJson = null;
         private static string testComponentJsonCompressed = null;
         private static string testComponentPresentationJson = null;
         private static string testComponentPresentationJsonCompressed = null;
+        private static string testPageJson = null;
+        private static string testPageJsonCompressed = null;
 
         [ClassInitialize]
         public static void SetupTest(TestContext context)
         {
             testComponent = GenerateTestComponent();
             testComponentPresentation = GenerateTestComponentPresentation();
+            testPage = GenerateTestPage();
 
             // Method GetService() is a (virtual) instance method now, so we need a temp instance.
             JsonSerialization testInstance = new JsonSerialization();
@@ -36,6 +41,26 @@ namespace DD4T.Model.Test
             testComponentJsonCompressed = testInstance.GetService(true).Serialize<IComponent>(testComponent);
             testComponentPresentationJson = testInstance.GetService(false).Serialize<IComponentPresentation>(testComponentPresentation);
             testComponentPresentationJsonCompressed = testInstance.GetService(true).Serialize<IComponentPresentation>(testComponentPresentation);
+            testPageJson = testInstance.GetService(false).Serialize<IPage>(testPage);
+            testPageJsonCompressed = testInstance.GetService(true).Serialize<IPage>(testPage);
+        }
+
+        [TestMethod]
+        public void SerializePageJson()
+        {
+            SerializeJson<Page>(false);
+        }
+
+        [TestMethod]
+        public void DeserializePageJson()
+        {
+            DeserializeJson<Page>(false);
+        }
+
+        [TestMethod]
+        public void DeserializeAndDecompressPageJson()
+        {
+            DeserializeJson<Page>(true);
         }
 
 
@@ -149,6 +174,10 @@ namespace DD4T.Model.Test
             {
                 return (T)testComponentPresentation;
             }
+            if (typeof(T) == typeof(Page))
+            {
+                return (T)testPage;
+            }
             return default(T);
         }
 
@@ -161,6 +190,10 @@ namespace DD4T.Model.Test
             if (typeof(T) == typeof(ComponentPresentation))
             {
                 return isCompressed ? testComponentPresentationJsonCompressed : testComponentPresentationJson;
+            }
+            if (typeof(T) == typeof(Page))
+            {
+                return isCompressed ? testPageJsonCompressed : testPageJson;
             }
             return String.Empty;
         }
@@ -200,7 +233,10 @@ namespace DD4T.Model.Test
                 {
                     Assert.IsTrue(((IComponentPresentation)c).Component.Title == "Test - component.title");
                 }
-
+                else if (c is Page)
+                {
+                    Assert.IsTrue(((IPage)c).Title == "Test - page.title");
+                }
             }
             System.Diagnostics.Trace.WriteLine(string.Format("[{0}] deserialized {1} objects of type {2}", stopwatch.Elapsed, loop, typeof(T).Name));
             stopwatch.Stop();

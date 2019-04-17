@@ -116,7 +116,18 @@ namespace DD4T.Model.Test
                     Id = "tcm:0-2-1",
                     Title = "Test - owningpublication.title"
                 },
-                ComponentPresentations = new System.Collections.Generic.List<ComponentPresentation>()
+                ComponentPresentations = new System.Collections.Generic.List<ComponentPresentation>(),
+                Regions = new List<Region>
+                {
+                    new Region()
+                    {
+                        Name = "Region A",
+                        ComponentPresentations = new List<ComponentPresentation>
+                        {
+                            GenerateTestComponentPresentation() as ComponentPresentation
+                        }
+                    }
+                }
             };
             List<Condition> conditions = new List<Condition>();
             conditions.Add(new CustomerCharacteristicCondition()
@@ -233,5 +244,14 @@ namespace DD4T.Model.Test
 
         }
 
+        [TestMethod]
+        public void PageHasRegionWithComponentPresentation()
+        {
+            IPage testPage = GenerateTestPage();
+            Assert.IsNotNull(testPage.Regions, "page has no regions");
+            Assert.AreEqual(1, testPage.Regions.Count(), "page has incorrect nr of regions");
+            Assert.IsNotNull(testPage.Regions.FirstOrDefault().ComponentPresentations, "page has region but component presentations are null");
+            Assert.AreEqual(1, testPage.Regions.FirstOrDefault().ComponentPresentations.Count(), "page has region but it has incorrect nr of component presentations");
+        }
     }
 }

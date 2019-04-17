@@ -63,6 +63,7 @@
     <Compile Include="IField.cs" />
     <Compile Include="IKeyword.cs" />
     <Compile Include="IMultimedia.cs" />
+    <Compile Include="IRegion.cs" />
     <Compile Include="ITargetGroup.cs" />
     <Compile Include="IOrganizationalItem.cs" />
     <Compile Include="IPage.cs" />

@@ -91,7 +91,66 @@ namespace DD4T.ContentModel
         }
 
         public int Version { get; set; }
+
+        public Schema RegionSchema { get; set; }
+
+        [XmlIgnore]
+        ISchema IPage.RegionSchema
+        {
+            get { return RegionSchema; }
+        }
+
+        public List<Region> Regions { get; set; }
+
+        [XmlIgnore]
+        IList<IRegion> IPage.Regions
+        {
+            get { return Regions.ToList<IRegion>(); }
+        }
     }
+
+    public class Region : IRegion
+    {
+    
+        public string Name { get; set; }
+
+        public Schema Schema { get; set; }
+
+        [XmlIgnore]
+        ISchema IRegion.Schema
+        {
+            get { return Schema; }
+        }
+
+        public FieldSet MetadataFields { get; set; }
+
+        [XmlIgnore]
+        IFieldSet IRegion.MetadataFields
+        {
+            get
+            {
+                return MetadataFields != null ? MetadataFields as IFieldSet : null;
+            }
+        }
+
+        public List<ComponentPresentation> ComponentPresentations { get; set; }
+
+        [XmlIgnore]
+        IList<IComponentPresentation> IRegion.ComponentPresentations
+        {
+            get { return ComponentPresentations.ToList<IComponentPresentation>(); }
+        }
+
+        public List<Region> Regions { get; set; }
+
+        [XmlIgnore]
+        IList<IRegion> IRegion.Regions
+        {
+            get { return Regions.ToList<IRegion>(); }
+        }
+
+    }
+
 
     public class Keyword : RepositoryLocalItem, IKeyword
     {
