@@ -16,5 +16,7 @@
         IOrganizationalItem StructureGroup { get; }
         int Version { get; }
         DateTime LastPublishedDate { get; }
+        ISchema RegionSchema { get; }
+        IList<IRegion> Regions { get; }
     }
 }
