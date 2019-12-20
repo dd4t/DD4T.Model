@@ -9,9 +9,9 @@
     <description>Content model classes of DD4T</description>
     <releaseNotes>
     </releaseNotes>
-    <tags>SDLTridion Tridion DD4T SDL Web SDLWeb SDLWeb8</tags>
+    <tags>DD4T SDL Web SDLWeb SDL Tridion Sites</tags>
     <dependencies>
-      <dependency id="Newtonsoft.Json" version="10.0.1" />
+      <dependency id="Newtonsoft.Json" version="11.0.2" />
     </dependencies>
   </metadata>
 </package>
