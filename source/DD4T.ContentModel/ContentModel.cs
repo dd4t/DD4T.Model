@@ -1,15 +1,19 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Security.Permissions;
 using System.Text.RegularExpressions;
+using System.Xml;
 using System.Xml.Serialization;
 
 namespace DD4T.ContentModel
 {
+    [Serializable]
     public class ComponentMeta : IComponentMeta
     {
         public string ID { get; set; }
@@ -33,6 +37,7 @@ namespace DD4T.ContentModel
         }
     }
 
+    [Serializable]
     public class Page : RepositoryLocalItem, IPage
     {
         public DateTime RevisionDate { get; set; }
@@ -152,7 +157,7 @@ namespace DD4T.ContentModel
 
     }
 
-
+    [Serializable]
     public class Keyword : RepositoryLocalItem, IKeyword
     {
         [XmlAttribute]
@@ -198,6 +203,7 @@ namespace DD4T.ContentModel
         }
     }
 
+    [Serializable]
     public class Category : RepositoryLocalItem, ICategory
     {
         public List<Keyword> Keywords { get; set; }
@@ -207,6 +213,7 @@ namespace DD4T.ContentModel
         { get { return Keywords.ToList<IKeyword>(); } }
     }
 
+    [Serializable]
     public class ComponentPresentation : Model, IComponentPresentation
     {
         [XmlIgnore]
@@ -239,7 +246,7 @@ namespace DD4T.ContentModel
         {
             get
             {
-                if (TargetGroupConditions!=null)
+                if (TargetGroupConditions != null)
                 {
                     //This is for backwards compatibility where for some reason the conditions of the target groups were pulled out and put
                     //On the ComponentPresentation model (skipping out the top level of target group definition; ie the target group and its inclusion/exclusion for the CP)
@@ -269,16 +276,17 @@ namespace DD4T.ContentModel
         [Obsolete("Conditions is deprecated, please refactor your code to work with TargetGroup.Conditions from items within the TargetGroupConditions property")]
         IList<ICondition> IComponentPresentation.Conditions
         {
-            get { return TargetGroupConditions==null ? null : TargetGroupConditions.Select(t => t.TargetGroup.Conditions).SelectMany(x => x).ToList<ICondition>(); }
+            get { return TargetGroupConditions == null ? null : TargetGroupConditions.Select(t => t.TargetGroup.Conditions).SelectMany(x => x).ToList<ICondition>(); }
         }
 
         [XmlIgnore]
         IList<ITargetGroupCondition> IComponentPresentation.TargetGroupConditions
         {
-            get { return TargetGroupConditions==null ? null : TargetGroupConditions.ToList<ITargetGroupCondition>(); }
+            get { return TargetGroupConditions == null ? null : TargetGroupConditions.ToList<ITargetGroupCondition>(); }
         }
     }
 
+    [Serializable]
     public class PageTemplate : RepositoryLocalItem, IPageTemplate
     {
         public string FileExtension { get; set; }
@@ -303,6 +311,7 @@ namespace DD4T.ContentModel
         }
     }
 
+    [Serializable]
     public class ComponentTemplate : RepositoryLocalItem, IComponentTemplate
     {
         public string OutputFormat { get; set; }
@@ -327,6 +336,7 @@ namespace DD4T.ContentModel
         }
     }
 
+    [Serializable]
     public class Component : RepositoryLocalItem, IComponent
     {
         #region Properties
@@ -401,6 +411,7 @@ namespace DD4T.ContentModel
         #endregion constructors
     }
 
+    [Serializable]
     public class Schema : RepositoryLocalItem, ISchema
     {
         public OrganizationalItem Folder { get; set; }
@@ -418,13 +429,34 @@ namespace DD4T.ContentModel
         }
     }
 
+    [Serializable]
     public enum MergeAction { Replace, Merge, MergeMultiValueSkipSingleValue, MergeMultiValueReplaceSingleValue, Skip }
+
 
     [Serializable]
     public class FieldSet : SerializableDictionary<string, IField, Field>, IFieldSet, IXmlSerializable
+    //public class FieldSet : Dictionary<string, IField>, IFieldSet
     {
+        public FieldSet() { }
+        public FieldSet(SerializationInfo info, StreamingContext context)
+        {
+            var data = (string) info.GetValue("json", typeof(string));
+            var fs = JsonConvert.DeserializeObject(data, new JsonSerializerSettings() { TypeNameHandling = TypeNameHandling.All }) as FieldSet;
+            foreach (var f in fs)
+            {
+                Add(f.Key, f.Value);
+            }
+        }
+
+        public override void GetObjectData(SerializationInfo info, StreamingContext ctxt)
+        {
+            var data = JsonConvert.SerializeObject(this, new JsonSerializerSettings() { TypeNameHandling = TypeNameHandling.All });
+            info.AddValue("json", data);
+        }
+
     }
 
+    [Serializable]
     public class Field : IField
     {
         #region JSON serialization control
@@ -687,6 +719,7 @@ namespace DD4T.ContentModel
         }
     }
 
+    [Serializable]
     public abstract class Model : IModel
     {
         public SerializableDictionary<string, IFieldSet, FieldSet> ExtensionData { get; set; }
@@ -730,12 +763,14 @@ namespace DD4T.ContentModel
         }
     }
 
+    [Serializable]
     public abstract class TridionItem : Model, IItem
     {
         public string Id { get; set; }
         public string Title { get; set; }
     }
 
+    [Serializable]
     public abstract class RepositoryLocalItem : TridionItem, IRepositoryLocal
     {
         public string PublicationId { get; set; }
@@ -756,20 +791,27 @@ namespace DD4T.ContentModel
         }
     }
 
+    [Serializable]
     public class OrganizationalItem : RepositoryLocalItem, IOrganizationalItem
     {
     }
 
+    [Serializable]
     public class Publication : TridionItem, IPublication
     {
     }
 
+    [Serializable]
     public class TcmUri
     {
         public int ItemId { get; set; }
         public int PublicationId { get; set; }
         public int ItemTypeId { get; set; }
         public int Version { get; set; }
+
+        public TcmUri()
+        {
+        }
 
         [DebuggerStepThrough]
         public TcmUri(string Uri)
@@ -825,6 +867,7 @@ namespace DD4T.ContentModel
         }
     }
 
+    [Serializable]
     public class Multimedia : IMultimedia
     {
         public string Url
@@ -877,6 +920,7 @@ namespace DD4T.ContentModel
         }
     }
 
+    [Serializable]
     public class Binary : Component, IBinary
     {
         public byte[] BinaryData { get; set; }
@@ -885,6 +929,7 @@ namespace DD4T.ContentModel
         public System.IO.Stream BinaryStream { get; set; }
     }
 
+    [Serializable]
     public class TargetGroup : RepositoryLocalItem, ITargetGroup
     {
         public string Description { get; set; }
@@ -895,11 +940,13 @@ namespace DD4T.ContentModel
         IList<ICondition> ITargetGroup.Conditions { get { return Conditions.ToList<ICondition>(); } }
     }
 
+    [Serializable]
     public class Condition : ICondition
     {
         public bool Negate { get; set; }
     }
 
+    [Serializable]
     public class KeywordCondition : Condition
     {
         public Keyword Keyword { get; set; }
@@ -907,6 +954,7 @@ namespace DD4T.ContentModel
         public object Value { get; set; }
     }
 
+    [Serializable]
     public class CustomerCharacteristicCondition : Condition
     {
         public string Name { get; set; }
@@ -914,6 +962,7 @@ namespace DD4T.ContentModel
         public object Value { get; set; }
     }
 
+    [Serializable]
     public class TargetGroupCondition : Condition, ITargetGroupCondition
     {
         public TargetGroup TargetGroup { get; set; }
