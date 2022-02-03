@@ -105,13 +105,14 @@ namespace DD4T.ContentModel
         [XmlIgnore]
         IList<IRegion> IPage.Regions
         {
-            get { return Regions.ToList<IRegion>(); }
+            get { return Regions?.ToList<IRegion>(); }
         }
     }
 
+    [Serializable]
     public class Region : IRegion
     {
-    
+
         public string Name { get; set; }
 
         public Schema Schema { get; set; }
