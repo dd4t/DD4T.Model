@@ -5,17 +5,13 @@
 	</PropertyGroup>
 
 	<Target Name="All">
-		<CallTarget Targets="Clean;Restore;Compile" />
+		<CallTarget Targets="Clean;Compile" />
 		<Message Text="Build complete."/>
 	</Target>
 
 	<Target Name="Clean">
 		<!-- Clean removes all build artifacts to prepare for a new build. -->
 		<MSBuild Projects="$(MSBuildProjectDirectory)\source\DD4T Model.sln" Targets="Clean" />
-	</Target>	
-	<Target Name="Restore">
-		<!-- Restore nuget packages to prepare for a new build. -->
-		<MSBuild Projects="$(MSBuildProjectDirectory)\source\DD4T Model.sln" Targets="Restore" />
 	</Target>
 	<Target Name="Compile">
 		<!-- Build the solution. -->

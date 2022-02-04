@@ -14,6 +14,8 @@ assembly_info:
   assembly_informational_version: '{version}'
 install:
 - choco install msbuild.communitytasks -y
+before_build:
+  - nuget restore './source/DD4T Model.sln'
 build:
   project: build.msbuild
   verbosity: normal
