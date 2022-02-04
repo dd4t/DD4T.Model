@@ -14,6 +14,8 @@
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -41,8 +43,8 @@
       <HintPath>..\..\build\bin\DD4T.ContentModel.XmlSerializers.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net40\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -86,6 +88,7 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+    <Error Condition="!Exists('$(SolutionDir)\..\DD4T Model.Targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\..\DD4T Model.Targets'))" />
   </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
@@ -94,11 +97,12 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-  <Import Project="..\..\DD4T Model.Targets" />
+  <!--<Import Project="..\..\DD4T Model.Targets" />-->
   <Import Project="$(SolutionDir)\PrivateFalse.targets" Condition="Exists('$(SolutionDir)\PrivateFalse.targets')" />
   <Target Name="AfterBuild">
     <CallTarget Targets="Package" />
     <Message Text="Installing package to local NuGet repo" Importance="high" Condition="'$(NUGET_LOCALREPO)' != ''" />
     <CallTarget Targets="Install" Condition="'$(NUGET_LOCALREPO)' != ''" />
   </Target>
+  <Import Project="$(SolutionDir)\..\DD4T Model.Targets" Condition="Exists('$(SolutionDir)\..\DD4T Model.Targets')" />
 </Project>
