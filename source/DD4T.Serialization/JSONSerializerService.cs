@@ -28,6 +28,7 @@ namespace DD4T.Serialization
                             };
                             _serializer.Converters.Add(new FieldConverter());
                             _serializer.Converters.Add(new FieldSetConverter());
+                            _serializer.Converters.Add(new KeywordConverter());
                         }
                     }
                 }
@@ -99,6 +100,14 @@ namespace DD4T.Serialization
         public override IFieldSet Create(Type objectType)
         {
             return new FieldSet();
+        }
+    }
+
+    public class KeywordConverter : CustomCreationConverter<IKeyword>
+    {
+        public override IKeyword Create(Type objectType)
+        {
+            return new Keyword();
         }
     }
 
