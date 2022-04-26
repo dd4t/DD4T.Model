@@ -179,10 +179,22 @@ namespace DD4T.ContentModel
         public string Path { get; set; }
 
         [XmlIgnore]
-        public IList<IKeyword> RelatedKeywords { get; set; }
+        public List<Keyword> RelatedKeywords { get; set; }
 
         [XmlIgnore]
-        public IList<IKeyword> ParentKeywords { get; set; }
+        IList<IKeyword> IKeyword.RelatedKeywords
+        {
+            get { return RelatedKeywords.ToList<IKeyword>(); }
+        }
+
+        [XmlIgnore]
+        public List<Keyword> ParentKeywords { get; set; }
+
+        [XmlIgnore]
+        IList<IKeyword> IKeyword.ParentKeywords
+        {
+            get { return ParentKeywords.ToList<IKeyword>(); }
+        }
 
         public FieldSet MetadataFields { get; set; }
 
@@ -198,8 +210,8 @@ namespace DD4T.ContentModel
         public Keyword()
         {
             this.MetadataFields = new FieldSet();
-            this.ParentKeywords = new List<IKeyword>();
-            this.RelatedKeywords = new List<IKeyword>();
+            this.ParentKeywords = new List<Keyword>();
+            this.RelatedKeywords = new List<Keyword>();
         }
     }
 
