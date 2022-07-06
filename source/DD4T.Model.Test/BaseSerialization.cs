@@ -86,8 +86,18 @@ namespace DD4T.Model.Test
                         Title = "My keyword",
                         Key = "My key",
                         Description = "My description",
-                        Id = "tcm:1-2-1024"
-                    }
+                        Id = "tcm:1-2-1024",
+                        ParentKeywords = new List<Keyword>()
+                        {
+                            new Keyword()
+                            {
+                                Title = "My parent keyword",
+                                Key = "My parent key",
+                                Description = "My parent description",
+                                Id = "tcm:2-2-1024"
+                            }
+                        }
+                    },
                 }
                 }
                 ));
@@ -125,6 +135,34 @@ namespace DD4T.Model.Test
                         ComponentPresentations = new List<ComponentPresentation>
                         {
                             GenerateTestComponentPresentation() as ComponentPresentation
+                        }
+                    }
+                },
+                Categories = new List<Category>()
+                {
+                    new Category()
+                    {
+                        Keywords = new List<Keyword>()
+                        {
+                            new Keyword()
+                            {
+                                Title = "My keyword",
+                                Key = "My key",
+                                Description = "My description",
+                                Id = "tcm:1-2-1024",
+                                ParentKeywords = new List<Keyword>()
+                                {
+                                    new Keyword()
+                                    {
+                                        IsRoot = false,
+                                        IsAbstract = false,
+                                        Title = "My parent keyword",
+                                        Key = "My parent key",
+                                        Description = "My parent description",
+                                        Id = "tcm:2-2-1024"
+                                    }
+                                }
+                            }
                         }
                     }
                 }

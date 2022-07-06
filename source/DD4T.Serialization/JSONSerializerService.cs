@@ -26,6 +26,10 @@ namespace DD4T.Serialization
                             {
                                 NullValueHandling = NullValueHandling.Ignore
                             };
+                            if (Configuration.JsonSerializerMaxDepth != 0)
+                            {
+                                _serializer.MaxDepth = Configuration.JsonSerializerMaxDepth;
+                            }
                             _serializer.Converters.Add(new FieldConverter());
                             _serializer.Converters.Add(new FieldSetConverter());
                         }
