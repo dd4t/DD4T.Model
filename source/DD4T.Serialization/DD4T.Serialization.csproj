@@ -47,6 +47,7 @@
       <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -60,6 +61,7 @@
     </Compile>
     <Compile Include="BaseSerializerService.cs" />
     <Compile Include="Compressor.cs" />
+    <Compile Include="Configuration.cs" />
     <Compile Include="JSONSerializerService.cs" />
     <Compile Include="Properties\SpecificAssemblyInfo.cs" />
     <Compile Include="SerializationFormats.cs" />
