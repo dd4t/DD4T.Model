@@ -11,7 +11,7 @@
     </releaseNotes>
     <tags>DD4T SDL Web SDLWeb SDL Tridion Sites</tags>
     <dependencies>
-      <dependency id="Newtonsoft.Json" version="11.0.2" />
+      <dependency id="Newtonsoft.Json" version="13.0.1" />
     </dependencies>
   </metadata>
 </package>

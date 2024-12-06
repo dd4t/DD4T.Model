@@ -12,6 +12,7 @@ namespace DD4T.Serialization
 
         private object _lock = new object();
         private JsonSerializer _serializer = null;
+        public static int OverrideMaxDepth { get; set; } = -1;
         public JsonSerializer Serializer
         {
             get
@@ -29,6 +30,10 @@ namespace DD4T.Serialization
                             if (Configuration.JsonSerializerMaxDepth != 0)
                             {
                                 _serializer.MaxDepth = Configuration.JsonSerializerMaxDepth;
+                            }
+                            else if (OverrideMaxDepth > -1)
+                            {
+                                _serializer.MaxDepth = OverrideMaxDepth;
                             }
                             _serializer.Converters.Add(new FieldConverter());
                             _serializer.Converters.Add(new FieldSetConverter());
