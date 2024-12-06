@@ -5,6 +5,8 @@
 DD4T content model (.NET)
 Contains the model classes used in DD4T templates as well as the DD4T presentation layer for .NET.
 
+## Release notes for version 2.6.1
+- Added public static property OverrideMaxDepth to the JSONSerializerService to allow max deserialization depth to be configured from templates (it could already be set via the appSettings, but this is not possible in a Tridion template)
 
 ## Release notes for version 2.6
 
